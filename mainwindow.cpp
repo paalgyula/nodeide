@@ -20,6 +20,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QFileDialog>
+#include <QDirIterator>
 
 #include <src/widgets/codeeditor.h>
 #include <src/widgets/projectexplorer.h>
@@ -156,8 +157,10 @@ void MainWindow::tabChanged(int currentTab)
 {
     CodeEditor *editor = (CodeEditor*)m_documentTabs->widget(currentTab);
     if ( editor != NULL )
+    {
         this->setWindowTitle(QString("%1%2 - %3").arg( editor->isModified() ? "*" : "", editor->documentName(), WINDOW_TITLE ) );
-    else
+        editor->setFocus();
+    } else
         this->setWindowTitle(WINDOW_TITLE);
 }
 
@@ -173,7 +176,10 @@ void MainWindow::openFile(QFileInfo *info)
     else
         tabIndex = m_documentTabs->addTab( editor, icon, info->fileName() );
 
+    connect(editor, SIGNAL(modificationChanged(bool, CodeEditor*)), this, SLOT(fileModificationChanged(bool, CodeEditor*)));
+
     m_documentTabs->setCurrentIndex( tabIndex );
+    editor->setFocus();
 }
 
 void MainWindow::closeFile(int tabIndex)
@@ -195,6 +201,11 @@ void MainWindow::openProject()
     // Cancel
     if (selectedDir.isEmpty())
         return;
+
+    QDirIterator it(selectedDir, QStringList() << "*", QDir::Files, QDirIterator::Subdirectories);
+    while (it.hasNext()) {
+        qWarning() << it.next();
+    }
 
     m_runConfig->clear();
     QFile *file = new QFile(QString("%1/package.json").arg(selectedDir));
@@ -220,4 +231,11 @@ void MainWindow::closeCurrentTab()
     CodeEditor *editor = (CodeEditor*)m_documentTabs->currentWidget();
     if ( editor != NULL && editor->requestClose())
         m_documentTabs->removeTab( m_documentTabs->currentIndex() );
+}
+
+void MainWindow::fileModificationChanged(bool modified, CodeEditor* editor)
+{
+    int index = m_documentTabs->indexOf( editor );
+    m_documentTabs->setTabText(index, QString("%1%2").arg(modified ? "*" : "", editor->documentName()));
+    this->tabChanged(index);
 }

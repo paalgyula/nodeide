@@ -18,6 +18,7 @@ public:
     void getCursorPosition(int &line, int &col);
     QString documentName();
     bool isModified();
+    void setFocus();
 private:
     QsciScintilla *m_editor;
     QFile *m_file;
@@ -26,11 +27,13 @@ private:
     int pos_col;
 signals:
     void cursorPosChanged(int line, int col);
+    void modificationChanged(bool modified, CodeEditor*);
 public slots:
 
 private slots:
     void cursorPositionChanged(int line, int col);
 
+    void edited(bool modified);
 };
 
 #endif // CODEEDITOR_H

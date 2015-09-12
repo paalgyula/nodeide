@@ -5,6 +5,7 @@
 #include <QMimeDatabase>
 #include <QToolBar>
 
+#include <src/widgets/codeeditor.h>
 #include <src/widgets/projectexplorer.h>
 #include <src/widgets/runconfigurationswidget.h>
 
@@ -38,6 +39,8 @@ public slots:
     void openProject();
     void tabChanged(int currentTab);
     void closeCurrentTab();
+private slots:
+    void fileModificationChanged(bool modified, CodeEditor *editor);
 };
 
 #endif // MAINWINDOW_H

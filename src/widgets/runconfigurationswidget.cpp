@@ -6,6 +6,7 @@ RunConfigurationsWidget::RunConfigurationsWidget(QWidget *parent) : QWidget(pare
 {
     _comboConfigSelect = new QComboBox(this);
     _comboConfigSelect->setFixedWidth(100);
+    _comboConfigSelect->setFocusPolicy(Qt::ClickFocus);
 
     _btnStart = new QPushButton(this);
     _btnStop = new QPushButton(this);

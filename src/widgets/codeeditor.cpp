@@ -8,6 +8,8 @@
 #include <QFileInfo>
 
 #include <Qsci/qsciscintilla.h>
+#include <Qsci/qsciabstractapis.h>
+#include <Qsci/qsciapis.h>
 
 #include <src/highlighter/JSLexer.h>
 
@@ -45,7 +47,11 @@ CodeEditor::CodeEditor(QWidget *parent) :
     m_editor->setMarginsBackgroundColor(QColor(53, 56, 58));
     m_editor->setMarginsForegroundColor(QColor(173, 176, 178));
 
+    m_editor->setAutoCompletionThreshold(2);
+    m_editor->setAutoCompletionSource(QsciScintilla::AcsAPIs);
+
     connect( m_editor, SIGNAL(cursorPositionChanged(int,int)), this, SLOT(cursorPositionChanged(int,int)) );
+    connect( m_editor, SIGNAL(modificationChanged(bool)), this, SLOT(edited(bool)) );
 
     QHBoxLayout *lineNumberLayout = new QHBoxLayout();
     lineNumberLayout->addStretch();
@@ -129,4 +135,14 @@ QString CodeEditor::documentName()
 bool CodeEditor::isModified()
 {
     return m_editor->isModified();
+}
+
+void CodeEditor::setFocus()
+{
+    m_editor->setFocus();
+}
+
+void CodeEditor::edited(bool modified)
+{
+    emit modificationChanged(modified, this);
 }
