@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/play.png</file>
+        <file>icons/nodejs.png</file>
+        <file>icons/logo.png</file>
+        <file>icons/folder.png</file>
+        <file>icons/npm_128.png</file>
+        <file>icons/terminal.png</file>
+        <file>icons/mime/html.png</file>
+        <file>icons/mime/jade.png</file>
+        <file>icons/mime/javascript.png</file>
+        <file>icons/mime/text.png</file>
+        <file>icons/mime/json.png</file>
+        <file>icons/stop.png</file>
+        <file>icons/start.png</file>
+    </qresource>
+</RCC>
