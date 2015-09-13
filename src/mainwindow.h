@@ -6,7 +6,7 @@
 #include <QToolBar>
 
 #include <src/widgets/codeeditor.h>
-#include <src/widgets/projectexplorer.h>
+#include <src/widgets/ProjectExplorer.h>
 #include <src/widgets/runconfigurationswidget.h>
 #include <src/widgets/QuickFileOpenWidget.h>
 
@@ -20,9 +20,10 @@ public:
 
 private:
     // Actions
-    QAction *m_newFileAction;
-    QAction *m_saveFileAction;
-    QAction *m_openProjectAction;
+    QAction *m_actionNewFile;
+    QAction *m_actionSaveFile;
+    QAction *m_actionOpenProject;
+    QAction *m_actionQuickOpen;
     
     QuickFileOpenWidget *m_quickOpen;
 

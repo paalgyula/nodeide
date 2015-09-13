@@ -32,6 +32,7 @@ void QuickFileOpenWidget::setFileList(const QStringList fileList)
   m_fileListWidget->clear();
   m_fileListWidget->addItems(fileList);
   m_fileListWidget->setWindowOpacity(50);
+  m_fileListWidget->setItemWidget();
 }
 
 void MainWindow::showQuickOpenPopup()

@@ -21,7 +21,11 @@ CodeEditor::CodeEditor(QWidget *parent) :
     m_editor = new QsciScintilla;
 
     QFont font;
+#ifndef WIN32
+    font.setFamily("Courier");
+#else
     font.setFamily("Monospace");
+#endif
     font.setFixedPitch(true);
     font.setStyleHint(QFont::Monospace);
     font.setPointSize(10);
@@ -59,7 +63,7 @@ CodeEditor::CodeEditor(QWidget *parent) :
     lineNumberLayout->addWidget(m_cursorPositionLabel);
 
     QFrame *statusFrame = new QFrame(this);
-    statusFrame->setFrameShape(QFrame::StyledPanel);
+    //statusFrame->setFrameShape(QFrame::StyledPanel);
     statusFrame->setLayout( lineNumberLayout );
 
     QVBoxLayout *layout = new QVBoxLayout();

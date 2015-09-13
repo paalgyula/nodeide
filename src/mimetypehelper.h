@@ -2,11 +2,25 @@
 #define MIMETYPEHELPER
 
 #include <QFile>
+#include <QFileIconProvider>
 #include <QIcon>
 #include <QMimeDatabase>
 
-namespace NodeIDE {
-    static QIcon getIconForFile(QFileInfo *info)
+class Tools
+{
+private:
+    Tools()
+    {
+    }
+
+public:
+    static Tools &getInstance()
+    {
+          static Tools INSTANCE;
+          return INSTANCE;
+    }
+
+    QIcon getIconForFile(QFileInfo *info)
     {
         QMimeDatabase db;
         QMimeType type = db.mimeTypeForFile(info->fileName());
@@ -23,7 +37,10 @@ namespace NodeIDE {
         else
             mimeIcon = QIcon(iconFile.fileName());
 #else
-        mimeIcon = QIcon(":/icons/mime/text.png");
+        QFileIconProvider *provider = new QFileIconProvider();
+        mimeIcon = provider->icon(*info);
+
+        //mimeIcon = QIcon(":/icons/mime/text.png");
 #endif
 
         if ( mimeIcon.isNull() ) {
@@ -45,7 +62,6 @@ namespace NodeIDE {
 
         return mimeIcon;
     }
-}
+};
 
 #endif // MIMETYPEHELPER
-

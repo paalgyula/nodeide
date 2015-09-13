@@ -1,4 +1,4 @@
-#include "projectexplorer.h"
+#include "ProjectExplorer.h"
 
 #include "directorytreewidgetitem.h"
 
@@ -70,7 +70,7 @@ void ProjectExplorer::loadProjectDir(const QString projectDirectory)
             item->setWhatsThis(0, info.absoluteFilePath());
             root->addChild(item);
 
-            item->setIcon(0, NodeIDE::getIconForFile(&info));
+            item->setIcon(0, Tools::getInstance().getIconForFile(&info));
         }
     }
 

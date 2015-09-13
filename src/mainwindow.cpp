@@ -24,7 +24,7 @@
 #include <QToolButton>
 
 #include <src/widgets/codeeditor.h>
-#include <src/widgets/projectexplorer.h>
+#include <src/widgets/ProjectExplorer.h>
 #include <src/widgets/runconfigurationswidget.h>
 
 #include <Qsci/qsciscintilla.h>
@@ -62,9 +62,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     this->setCentralWidget( m_documentTabs );
 
     // Tab close button handler
-    connect(m_documentTabs, SIGNAL(tabCloseRequested(int)), this, SLOT(closeFile(int)));
+    connect(m_documentTabs, &QTabWidget::tabCloseRequested, this, &MainWindow::closeCurrentTab);
     // Tab close button handler
-    connect(m_documentTabs, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
+    connect(m_documentTabs, &QTabWidget::currentChanged, this, &MainWindow::tabChanged);
 
     this->setMinimumSize(QSize(700, 400));
 }
@@ -73,6 +73,10 @@ MainWindow::~MainWindow()
 {
 }
 
+/**
+ * @brief MainWindow::createMainMenu
+ * creates main menu
+ */
 void MainWindow::createMainMenu()
 {
     QMenuBar *mainMenu = new QMenuBar(this);
@@ -81,14 +85,14 @@ void MainWindow::createMainMenu()
     QMenu *fileMenu = new QMenu("&File", mainMenu);
 
     mainMenu->addMenu(fileMenu);
-    m_newFileAction = fileMenu->addAction( QIcon::fromTheme("document-new"), tr("&New file..."), this, SLOT(newFile()));
-    m_newFileAction->setShortcut( QKeySequence(Qt::CTRL + Qt::Key_N) );
+    m_actionNewFile = fileMenu->addAction( QIcon(":/icons/document_new.png"), tr("&New file..."), this, SLOT(newFile()));
+    m_actionNewFile->setShortcut( QKeySequence(Qt::CTRL + Qt::Key_N) );
 
-    m_saveFileAction = fileMenu->addAction( QIcon::fromTheme("document-save"), tr("&Save file"), this, SLOT(saveFile()));
-    m_saveFileAction->setShortcut( QKeySequence(Qt::CTRL + Qt::Key_S) );
+    m_actionSaveFile = fileMenu->addAction( QIcon(":/icons/document_save.png"), tr("&Save file"), this, SLOT(saveFile()));
+    m_actionSaveFile->setShortcut( QKeySequence(Qt::CTRL + Qt::Key_S) );
 
-    m_openProjectAction = fileMenu->addAction( QIcon::fromTheme("document-open-folder"), tr("Open project"), this, SLOT(openProject()));
-    m_openProjectAction->setShortcut( QKeySequence(Qt::CTRL + Qt::Key_O) );
+    m_actionOpenProject = fileMenu->addAction( QIcon(":/icons/document_open.png"), tr("Open project"), this, SLOT(openProject()));
+    m_actionOpenProject->setShortcut( QKeySequence(Qt::CTRL + Qt::Key_O) );
 
     fileMenu->addSeparator();
     fileMenu->addAction(tr("E&xit"), this, SLOT(close()), QKeySequence( Qt::ALT + Qt::Key_F4 ) );
@@ -102,7 +106,7 @@ void MainWindow::createMainMenu()
     mainMenu->addMenu(windowMenu);
 
     windowMenu->addAction("Close current tab", this, SLOT(closeCurrentTab()), QKeySequence( Qt::CTRL + Qt::Key_W ));
-    windowMenu->addAction("Quick open file...", this, SLOT(showQuickOpenPopup()), QKeySequence( Qt::CTRL + Qt::Key_P ));
+    m_actionQuickOpen = windowMenu->addAction( QIcon(":/icons/shock.png"), "Quick open file...", this, SLOT(showQuickOpenPopup()), QKeySequence( Qt::CTRL + Qt::Key_P ));
 
     mainMenu->addSeparator();
 
@@ -125,15 +129,17 @@ void MainWindow::createMainMenu()
 void MainWindow::createToolbar() {
     m_toolbar = new QToolBar(this);
     m_toolbar->setMovable(false);
-    m_toolbar->addAction( m_newFileAction );
-    m_toolbar->addAction( m_saveFileAction );
+    m_toolbar->addAction( m_actionNewFile );
+    m_toolbar->addAction( m_actionSaveFile );
     m_toolbar->addSeparator();
-    m_toolbar->addAction( m_openProjectAction );
+    m_toolbar->addAction( m_actionOpenProject );
+    m_toolbar->addAction( m_actionQuickOpen );
 
     QWidget* spacer = new QWidget();
     spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     m_toolbar->addWidget(spacer);
 
+    // Decoration :)
     QLabel *iconLabel = new QLabel("", this);
     iconLabel->setPixmap(QPixmap(":/icons/nodejs.png"));
     iconLabel->setFixedSize(QSize(32,32));
@@ -161,6 +167,8 @@ void MainWindow::createProjectExplorer()
     m_projectExplorer = new ProjectExplorer(this, "/home/paalgyula/wspace/tracker");
 
     QDockWidget *projectExplorerDock = new QDockWidget(tr("Project Explorer"), this);
+    projectExplorerDock->setTitleBarWidget(new QFrame(this));
+    projectExplorerDock->setWindowIcon(QIcon(":/icons/logo.png"));
     projectExplorerDock->setWidget( m_projectExplorer );
 
     connect(m_projectExplorer, SIGNAL(openFile(QFileInfo*)), this, SLOT(openFile(QFileInfo*)));
@@ -189,7 +197,7 @@ void MainWindow::openFile(QFileInfo *info)
 {
     CodeEditor *editor = new CodeEditor(this);
     editor->setDocument(new QFile(info->absoluteFilePath()));
-    QIcon icon = NodeIDE::getIconForFile(info);
+    QIcon icon = Tools::getInstance().getIconForFile(info);
 
     int tabIndex = -1;
     if ( icon.isNull() )
