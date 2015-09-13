@@ -40,7 +40,16 @@ set(HEADERS
 QT5_ADD_RESOURCES(RESOURCES resources.qrc)
 
 # Tell CMake to create the helloworld executable
-add_executable(nodeide WIN32 ${SOURCE} ${HEADERS} ${RESOURCES})
+ADD_EXECUTABLE(nodeide WIN32 ${SOURCE} ${HEADERS} ${RESOURCES})
+
+TARGET_COMPILE_FEATURES(nodeide PRIVATE cxx_range_for)
 
 # Use the Widgets module from Qt 5.
-target_link_libraries(nodeide ${QSCINTILLA_LIBRARY} Qt5::Widgets)
+TARGET_LINK_LIBRARIES(nodeide ${QSCINTILLA_LIBRARY} Qt5::Widgets)
+
+INSTALL(TARGETS nodeide DESTINATION bin)
+
+SET(CPACK_GENERATOR "RPM")
+SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Paál Gyula") #required
+
+INCLUDE(CPack)
