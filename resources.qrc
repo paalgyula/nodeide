@@ -13,5 +13,8 @@
         <file>icons/mime/json.png</file>
         <file>icons/stop.png</file>
         <file>icons/start.png</file>
+        <file>icons/npm_add.png</file>
+        <file>icons/npm_update.png</file>
+        <file>icons/bug.png</file>
     </qresource>
 </RCC>

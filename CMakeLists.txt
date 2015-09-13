@@ -11,8 +11,8 @@ set(CMAKE_AUTOMOC ON)
 find_package(Qt5Widgets)
 
 set(SOURCE
-  main.cpp
-  mainwindow.cpp
+  src/main.cpp
+  src/mainwindow.cpp
   src/highlighter/JSLexer.cpp
   src/widgets/codeeditor.cpp
   src/widgets/directorytreewidgetitem.cpp
@@ -22,7 +22,7 @@ set(SOURCE
 )
 
 set(HEADERS
-  mainwindow.h
+  src/mainwindow.h
   src/mimetypehelper.h
   src/highlighter/JSLexer.h
   src/widgets/codeeditor.h
