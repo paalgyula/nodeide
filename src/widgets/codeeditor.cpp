@@ -86,6 +86,23 @@ void CodeEditor::setDocument(QFile *file)
     m_editor->setText(in.readAll());
     // When load than no modification!
     m_editor->setModified(false);
+    file->close();
+}
+
+void CodeEditor::save()
+{
+    if (!m_file->open(QFile::WriteOnly))
+    {
+        QMessageBox::warning(this, tr("Application"),
+                             tr("Cannot write file %1:\n%2.")
+                             .arg(m_file->fileName())
+                             .arg(m_file->errorString()));
+        return;
+    }
+    QTextStream out(m_file);
+    out << m_editor->text();
+    m_editor->setModified(false);
+    m_file->close();
 }
 
 bool CodeEditor::requestClose() {
@@ -145,4 +162,11 @@ void CodeEditor::setFocus()
 void CodeEditor::edited(bool modified)
 {
     emit modificationChanged(modified, this);
+}
+
+CodeEditor::~CodeEditor()
+{
+    delete m_editor;
+    delete m_file;
+    delete m_cursorPositionLabel;
 }

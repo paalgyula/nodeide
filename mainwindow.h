@@ -32,6 +32,7 @@ private:
     void createMainMenu();
     void createToolbar();
     void createProjectExplorer();
+
 public slots:
     void newFile();
     void openFile(QFileInfo *info);
@@ -39,8 +40,10 @@ public slots:
     void openProject();
     void tabChanged(int currentTab);
     void closeCurrentTab();
+    void saveFile();
+
 private slots:
-    void fileModificationChanged(bool modified, CodeEditor *editor);
+    void fileModificationChanged(bool modified, CodeEditor *editor);    
 };
 
 #endif // MAINWINDOW_H

@@ -32,7 +32,7 @@
 #include <src/highlighter/JSLexer.h>
 #include <src/mimetypehelper.h>
 
-#define WINDOW_TITLE "KNodeIDE - Paál Gyula (c) 2015"
+#define WINDOW_TITLE "NodeIDE - Paál Gyula (c) 2015"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
@@ -80,7 +80,7 @@ void MainWindow::createMainMenu()
     m_newFileAction = fileMenu->addAction( QIcon::fromTheme("document-new"), tr("&New file..."), this, SLOT(newFile()));
     m_newFileAction->setShortcut( QKeySequence(Qt::CTRL + Qt::Key_N) );
 
-    m_saveFileAction = fileMenu->addAction( QIcon::fromTheme("document-save"), tr("&Save file"), this, SLOT(newFile()));
+    m_saveFileAction = fileMenu->addAction( QIcon::fromTheme("document-save"), tr("&Save file"), this, SLOT(saveFile()));
     m_saveFileAction->setShortcut( QKeySequence(Qt::CTRL + Qt::Key_S) );
 
     m_openProjectAction = fileMenu->addAction( QIcon::fromTheme("document-open-folder"), tr("Open project"), this, SLOT(openProject()));
@@ -120,10 +120,16 @@ void MainWindow::createToolbar() {
     spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     m_toolbar->addWidget(spacer);
 
+    QLabel *iconLabel = new QLabel("", this);
+    iconLabel->setPixmap(QPixmap(":/icons/nodejs.png"));
+    iconLabel->setFixedSize(QSize(32,32));
+
     QFont *font = new QFont();
     font->setBold(true);
-    QLabel *label = new QLabel("KNodeIDE");
+    QLabel *label = new QLabel("NodeIDE");
     label->setFont(*font);
+
+    m_toolbar->addWidget(iconLabel);
     m_toolbar->addWidget(label);
 
     QWidget* spacer2 = new QWidget();
@@ -185,8 +191,10 @@ void MainWindow::openFile(QFileInfo *info)
 void MainWindow::closeFile(int tabIndex)
 {
     CodeEditor *editor = (CodeEditor*)(m_documentTabs->widget(tabIndex));
-    if ( editor->requestClose() )
+    if ( editor->requestClose() ) {
         m_documentTabs->removeTab( tabIndex );
+        delete editor;
+    }
 }
 
 void MainWindow::openProject()
@@ -227,10 +235,11 @@ void MainWindow::openProject()
 
 void MainWindow::closeCurrentTab()
 {
-    qWarning() << "Editor close request";
     CodeEditor *editor = (CodeEditor*)m_documentTabs->currentWidget();
-    if ( editor != NULL && editor->requestClose())
+    if ( editor != NULL && editor->requestClose()) {
         m_documentTabs->removeTab( m_documentTabs->currentIndex() );
+        delete editor;
+    }
 }
 
 void MainWindow::fileModificationChanged(bool modified, CodeEditor* editor)
@@ -238,4 +247,10 @@ void MainWindow::fileModificationChanged(bool modified, CodeEditor* editor)
     int index = m_documentTabs->indexOf( editor );
     m_documentTabs->setTabText(index, QString("%1%2").arg(modified ? "*" : "", editor->documentName()));
     this->tabChanged(index);
+}
+
+void MainWindow::saveFile()
+{
+    CodeEditor *editor = (CodeEditor*)m_documentTabs->currentWidget();
+    editor->save();
 }

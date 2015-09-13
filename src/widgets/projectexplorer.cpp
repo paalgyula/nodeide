@@ -38,6 +38,7 @@ void ProjectExplorer::itemClicked(QTreeWidgetItem *item, int index)
 void ProjectExplorer::loadProjectDir(const QString projectDirectory)
 {
     m_tree->clear();
+    m_tree->setIconSize(QSize(24,24));
 
     QTreeWidgetItem *root = new QTreeWidgetItem(0);
     root->setText(0, "Project root");

@@ -13,12 +13,14 @@ class CodeEditor : public QWidget
 public:
     explicit CodeEditor(QWidget *parent = 0);
     void setDocument(QFile *file);
+    void save();
     bool requestClose();
     void reformat();
     void getCursorPosition(int &line, int &col);
     QString documentName();
     bool isModified();
     void setFocus();
+    ~CodeEditor();
 private:
     QsciScintilla *m_editor;
     QFile *m_file;
