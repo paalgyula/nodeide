@@ -17,7 +17,8 @@ SOURCES += main.cpp\
     src/widgets/projectexplorer.cpp \
     src/widgets/directorytreewidgetitem.cpp \
     src/widgets/codeeditor.cpp \
-    src/widgets/runconfigurationswidget.cpp
+    src/widgets/runconfigurationswidget.cpp \
+    src/widgets/npmstatusbar.cpp
 
 HEADERS  += mainwindow.h \
     src/highlighter/JSLexer.h \
@@ -25,9 +26,11 @@ HEADERS  += mainwindow.h \
     src/widgets/directorytreewidgetitem.h \
     src/widgets/codeeditor.h \
     src/mimetypehelper.h \
-    src/widgets/runconfigurationswidget.h
+    src/widgets/runconfigurationswidget.h \
+    src/widgets/npmstatusbar.h
 
 RESOURCES += \
     resources.qrc
 
 LIBS += -lqscintilla2
+

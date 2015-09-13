@@ -1,6 +1,8 @@
 #ifndef PROJECTEXPLORER_H
 #define PROJECTEXPLORER_H
 
+#include "npmstatusbar.h"
+
 #include <QTreeWidget>
 #include <QWidget>
 #include <QFileInfo>
@@ -16,6 +18,7 @@ public:
 private:
     QTreeWidget *m_tree;
     QString m_projectDir;
+    NpmStatusbar *m_statusbar;
 
 signals:
     void openFile(QFileInfo *fileInfo);

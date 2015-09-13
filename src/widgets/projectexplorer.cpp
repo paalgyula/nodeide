@@ -1,5 +1,6 @@
-#include "directorytreewidgetitem.h"
 #include "projectexplorer.h"
+
+#include "directorytreewidgetitem.h"
 
 #include <QDirModel>
 #include <QVBoxLayout>
@@ -15,14 +16,17 @@ ProjectExplorer::ProjectExplorer(QWidget *parent, QString projectDirectory) : QW
     m_tree = new QTreeWidget(this);
     m_tree->setHeaderHidden(true);
 
+    m_statusbar = new NpmStatusbar(this);
+
     connect( m_tree, SIGNAL(itemActivated(QTreeWidgetItem*,int)), this, SLOT(itemClicked(QTreeWidgetItem*,int)) );
 
-    QHBoxLayout *layout = new QHBoxLayout();
+    QVBoxLayout *layout = new QVBoxLayout();
     layout->setMargin(2);
     layout->setSpacing(0);
     this->setLayout(layout);
 
     layout->addWidget( m_tree );
+    layout->addWidget( m_statusbar );
 }
 
 void ProjectExplorer::itemClicked(QTreeWidgetItem *item, int index)
