@@ -16,9 +16,6 @@ private:
     QPushButton *_btnUpdate;
     QPushButton *_btnAdd;
     QProgressBar *_progressBar;
-signals:
-    void npmUpdateReqested();
-    void npmAddDependency();
 public slots:
 };
 

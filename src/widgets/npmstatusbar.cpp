@@ -1,6 +1,10 @@
 #include "npmstatusbar.h"
 
+#include "src/mainwindow.h"
+
+#include <QProcess>
 #include <QVBoxLayout>
+#include <QDebug>
 
 NpmStatusbar::NpmStatusbar(QWidget *parent) : QFrame(parent)
 {
@@ -26,8 +30,8 @@ NpmStatusbar::NpmStatusbar(QWidget *parent) : QFrame(parent)
     layout->addWidget( _btnUpdate );
 
     this->setLayout( layout );
-    this->connect( _btnAdd, SIGNAL(released()), this, SIGNAL(npmAddDependency()) );
-    this->connect( _btnUpdate, SIGNAL(released()), this, SIGNAL(npmUpdateReqested()) );
+    this->connect( _btnAdd, SIGNAL(released()), parentWidget(), SIGNAL(npmAddDependency()) );
+    this->connect( _btnUpdate, SIGNAL(released()), parentWidget(), SIGNAL(npmUpdateReqested()) );
 }
 
 void NpmStatusbar::setProcessing(bool process)
@@ -38,5 +42,24 @@ void NpmStatusbar::setProcessing(bool process)
 void NpmStatusbar::setStatus(const QString status)
 {
 
+}
+
+void MainWindow::updatePackages()
+{
+    QProcess *process = new QProcess(this);
+    process->setProgram("npm");
+    process->setWorkingDirectory( _workingDir );
+
+    process->setArguments(QStringList() << "update");
+    process->start(QProcess::ReadOnly);
+
+    QObject::connect(process, &QProcess::readyRead, [process, this]() {
+        qWarning() << QString(process->readAll());
+    });
+
+    QObject::connect(process, &QProcess::stateChanged, [process, this](QProcess::ProcessState state) {
+        if ( state == QProcess::NotRunning )
+            process->deleteLater();
+    });
 }
 

@@ -164,6 +164,7 @@ void MainWindow::createProjectExplorer()
     projectExplorerDock->setWidget( m_projectExplorer );
 
     connect(m_projectExplorer, SIGNAL(openFile(QFileInfo*)), this, SLOT(openFile(QFileInfo*)));
+    connect(m_projectExplorer, SIGNAL(npmUpdateReqested()), this, SLOT(updatePackages()));
 
     this->addDockWidget(Qt::LeftDockWidgetArea, projectExplorerDock);
 }
@@ -224,10 +225,11 @@ void MainWindow::openProject()
     if (selectedDir.isEmpty())
         return;
     
+    _workingDir = selectedDir;
     _projectFiles->clear();
-    QDirIterator it(selectedDir, QStringList() << "*", QDir::Files, QDirIterator::Subdirectories);
+    QDirIterator it(_workingDir, QStringList() << "*", QDir::Files, QDirIterator::Subdirectories);
     while (it.hasNext()) {
-      QString path = it.next().replace( selectedDir, "" );
+      QString path = it.next().replace( _workingDir, "" );
       if ( path.startsWith("/node_modules/") ||
 	path.startsWith("/public/bower_components/"))
 	continue;
@@ -235,8 +237,9 @@ void MainWindow::openProject()
       *_projectFiles << path;
     }
 
+    // HAX :D
     m_runConfig->clear();
-    QFile *file = new QFile(QString("%1/package.json").arg(selectedDir));
+    QFile *file = new QFile(QString("%1/package.json").arg(_workingDir));
     if ( file->exists() ) {
         file->open(QFile::ReadOnly);
         QByteArray fileContent = file->readAll();
@@ -250,7 +253,7 @@ void MainWindow::openProject()
         }
     }
 
-    m_projectExplorer->loadProjectDir(selectedDir);
+    m_projectExplorer->loadProjectDir( _workingDir );
 }
 
 void MainWindow::closeCurrentTab()

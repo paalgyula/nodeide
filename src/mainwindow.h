@@ -37,6 +37,7 @@ private:
     void createProjectExplorer();
 
     QStringList *_projectFiles;
+    QString _workingDir;
     
 public slots:
     void newFile();
@@ -47,6 +48,7 @@ public slots:
     void closeCurrentTab();
     void saveFile();
 
+    void updatePackages();
 private slots:
     void fileModificationChanged(bool modified, CodeEditor *editor);    
     void showQuickOpenPopup();

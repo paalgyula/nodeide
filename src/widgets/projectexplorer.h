@@ -22,6 +22,8 @@ private:
 
 signals:
     void openFile(QFileInfo *fileInfo);
+    void npmUpdateReqested();
+    void npmAddDependency();
 
 public slots:
     void itemClicked(QTreeWidgetItem* item, int index);

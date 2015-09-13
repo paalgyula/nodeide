@@ -1,6 +1,7 @@
 #include "runconfigurationswidget.h"
 
 #include <QVBoxLayout>
+#include <QDebug>
 
 RunConfigurationsWidget::RunConfigurationsWidget(QWidget *parent) : QWidget(parent)
 {
@@ -35,18 +36,18 @@ RunConfigurationsWidget::RunConfigurationsWidget(QWidget *parent) : QWidget(pare
     layout->setSpacing(0);
     layout->setMargin(0);
 
-    this->setLayout(layout);
+    connect(_btnStart, &QPushButton::clicked, this, &RunConfigurationsWidget::startRequest);
+    connect(_btnStop, &QPushButton::clicked, this, &RunConfigurationsWidget::startRequest);
 
+    this->setStatus(NotRunning);
+
+    this->setLayout(layout);
     this->clear();
 }
 
 void RunConfigurationsWidget::clear()
 {
-    for (int i=_comboConfigSelect->count();i<0;i--)
-    {
-        _comboConfigSelect->removeItem(0);
-    }
-
+    _comboConfigSelect->clear();
     _comboConfigSelect->setEnabled(false);
 }
 
@@ -59,7 +60,25 @@ void RunConfigurationsWidget::addScript(const QString script)
     }
 }
 
-void RunConfigurationsWidget::start()
+void RunConfigurationsWidget::setStatus(ExecutionStatus status)
 {
+    this->_status = status;
 
+    if ( _comboConfigSelect->count() > 0 )
+    {
+        if ( this->_status == Running ) {
+            _btnStart->setEnabled(false);
+            _btnStop->setEnabled(true);
+        }
+        else
+        {
+            _btnStart->setEnabled(true);
+            _btnStop->setEnabled(false);
+        }
+    }
+}
+
+const QString RunConfigurationsWidget::script()
+{
+    return _comboConfigSelect->currentText();
 }
