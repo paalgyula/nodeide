@@ -21,6 +21,7 @@
 #include <QJsonObject>
 #include <QFileDialog>
 #include <QDirIterator>
+#include <QToolButton>
 
 #include <src/widgets/codeeditor.h>
 #include <src/widgets/projectexplorer.h>
@@ -102,8 +103,17 @@ void MainWindow::createMainMenu()
     mainMenu->addSeparator();
 
     // About menu
-    QMenu *aboutMenu = new QMenu(tr("About"), mainMenu);
-    mainMenu->addMenu(aboutMenu);
+    QMenuBar *rightMenu = new QMenuBar();
+    QMenu *aboutMenu = new QMenu(tr("About"), rightMenu);
+    rightMenu->addMenu(aboutMenu);
+
+    // TODO: impelment a bugReport form
+    QToolButton *bugButton = new QToolButton(this);
+    bugButton->setFocusPolicy(Qt::ClickFocus);
+    bugButton->setAutoRaise(true);
+    bugButton->setIcon(QIcon(":/icons/bug.png"));
+
+    mainMenu->setCornerWidget(bugButton);
 
     this->setMenuBar(mainMenu);
 }
