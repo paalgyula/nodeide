@@ -8,6 +8,7 @@
 #include <src/widgets/codeeditor.h>
 #include <src/widgets/projectexplorer.h>
 #include <src/widgets/runconfigurationswidget.h>
+#include <src/widgets/QuickFileOpenWidget.h>
 
 class MainWindow : public QMainWindow
 {
@@ -22,6 +23,8 @@ private:
     QAction *m_newFileAction;
     QAction *m_saveFileAction;
     QAction *m_openProjectAction;
+    
+    QuickFileOpenWidget *m_quickOpen;
 
     QTabWidget *m_documentTabs;
 
@@ -33,6 +36,8 @@ private:
     void createToolbar();
     void createProjectExplorer();
 
+    QStringList *_projectFiles;
+    
 public slots:
     void newFile();
     void openFile(QFileInfo *info);
@@ -44,6 +49,7 @@ public slots:
 
 private slots:
     void fileModificationChanged(bool modified, CodeEditor *editor);    
+    void showQuickOpenPopup();
 };
 
 #endif // MAINWINDOW_H

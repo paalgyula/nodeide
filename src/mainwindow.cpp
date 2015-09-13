@@ -44,6 +44,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     this->createToolbar();
     this->createProjectExplorer();
 
+    m_quickOpen = NULL;
+    _projectFiles = new QStringList();
+      
     m_documentTabs = new QTabWidget(this);
     m_documentTabs->setTabsClosable(true);
 
@@ -99,6 +102,7 @@ void MainWindow::createMainMenu()
     mainMenu->addMenu(windowMenu);
 
     windowMenu->addAction("Close current tab", this, SLOT(closeCurrentTab()), QKeySequence( Qt::CTRL + Qt::Key_W ));
+    windowMenu->addAction("Quick open file...", this, SLOT(showQuickOpenPopup()), QKeySequence( Qt::CTRL + Qt::Key_P ));
 
     mainMenu->addSeparator();
 
@@ -219,10 +223,16 @@ void MainWindow::openProject()
     // Cancel
     if (selectedDir.isEmpty())
         return;
-
+    
+    _projectFiles->clear();
     QDirIterator it(selectedDir, QStringList() << "*", QDir::Files, QDirIterator::Subdirectories);
     while (it.hasNext()) {
-        qWarning() << it.next();
+      QString path = it.next().replace( selectedDir, "" );
+      if ( path.startsWith("/node_modules/") ||
+	path.startsWith("/public/bower_components/"))
+	continue;
+      
+      *_projectFiles << path;
     }
 
     m_runConfig->clear();
