@@ -65,11 +65,11 @@ public:
 
     const QFont monoFont() {
         QFont font;
-    #ifndef WIN32
+#ifdef _WIN32
         font.setFamily("Courier");
-    #else
+#else
         font.setFamily("Monospace");
-    #endif
+#endif
         font.setFixedPitch(true);
         font.setStyleHint(QFont::Monospace);
         font.setPointSize(10);
