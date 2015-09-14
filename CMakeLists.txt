@@ -20,7 +20,7 @@ set(SOURCE
   src/widgets/codeeditor.cpp
   src/widgets/directorytreewidgetitem.cpp
   src/widgets/npmstatusbar.cpp
-  src/widgets/projectexplorer.cpp
+  src/widgets/ProjectExplorer.cpp
   src/widgets/runconfigurationswidget.cpp
   src/widgets/QuickFileOpenWidget.cpp
   src/widgets/lists/QuickSearchItem.cpp
@@ -33,7 +33,7 @@ set(HEADERS
   src/widgets/codeeditor.h
   src/widgets/directorytreewidgetitem.h
   src/widgets/npmstatusbar.h
-  src/widgets/projectexplorer.h
+  src/widgets/ProjectExplorer.h
   src/widgets/runconfigurationswidget.h
   src/widgets/QuickFileOpenWidget.h
   src/widgets/lists/QuickSearchItem.h
