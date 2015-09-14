@@ -2,6 +2,7 @@
 #include <QApplication>
 #include <QPainter>
 #include <src/mimetypehelper.h>
+#include <QDebug>
 
 QuickSearchItem::QuickSearchItem(QWidget *parent) : QStyledItemDelegate(parent)
 {
@@ -14,6 +15,7 @@ void QuickSearchItem::paint(QPainter* painter, const QStyleOptionViewItem& optio
     initStyleOption(&opt, index);
 
     QString fileName = index.model()->data(index.model()->index(index.row(), 0)).toString();
+    QString filterText = index.model()->data(index.model()->index(index.row(), 2)).toString();
     QIcon icon = qvariant_cast<QIcon>(index.model()->data(index.model()->index(index.row(), 1)));
 
     QRect rect = opt.rect;
@@ -23,7 +25,7 @@ void QuickSearchItem::paint(QPainter* painter, const QStyleOptionViewItem& optio
     QStyle *style = opt.widget ? opt.widget->style() : QApplication::style();
     style->drawControl(QStyle::CE_ItemViewItem, &opt, painter, opt.widget);
 
-/*    QPalette::ColorGroup cg = opt.state & QStyle::State_Enabled ? QPalette::Normal : QPalette::Disabled;
+    QPalette::ColorGroup cg = opt.state & QStyle::State_Enabled ? QPalette::Normal : QPalette::Disabled;
     if (cg == QPalette::Normal && !(opt.state & QStyle::State_Active))
         cg = QPalette::Inactive;
 
@@ -31,38 +33,55 @@ void QuickSearchItem::paint(QPainter* painter, const QStyleOptionViewItem& optio
     if (opt.state & QStyle::State_Selected)
         painter->setPen(opt.palette.color(cg, QPalette::HighlightedText));
     else
-        painter->setPen(opt.palette.color(cg, QPalette::Text));*/
+        painter->setPen(opt.palette.color(cg, QPalette::Text));
 
     QFont font = Tools::getInstance().defaultFont();
     painter->setFont(font);
 
+    QString filePart1, filePart2;
+    filePart1 = fileName.left( fileName.indexOf(filterText) );
+    filePart2 = fileName.right( fileName.length() - filterText.length() - filePart1.length() );
+
     QFontMetrics metric(font);
-    int width = metric.width( fileName );
+    int part1width = metric.width( filePart1 );
 
-    // draw 2 lines of text
-    /*painter->drawText(QRect(rect.left() + rect.height() + 5, rect.top() + 2, rect.width(), rect.height()/2),
-                      opt.displayAlignment, line0);
-    painter->drawText(QRect(rect.left() + rect.height() + 5, rect.top()+rect.height()/2, rect.width(), rect.height()/2),
-                      opt.displayAlignment, line1);*/
+    QFont boldFont = Tools::getInstance().defaultFont();
+    boldFont.setBold(true);
+    QFontMetrics metricBold(boldFont);
+    int boldWidth = metricBold.width( filterText );
 
-    painter->drawText(QRect(rect.left() + rect.height() + 5,
-                            rect.top(),
-                            rect.left() + rect.height() + 5 + width,
-                            rect.height()),
-                          opt.displayAlignment, fileName);
+    int leftPadding = 24;
 
-    painter->drawText(QRect(rect.left() + rect.height() + 5 + width,
+    painter->drawText(QRect(rect.left() + leftPadding,
                             rect.top(),
                             rect.width(),
                             rect.height()),
-                          opt.displayAlignment, "line0");
+                          opt.displayAlignment, filePart1);
 
-    painter->drawPixmap(rect.left() + 2, rect.top() + 2, icon.pixmap(QSize(24,24)).scaled(QSize(rect.height()-4,rect.height()-4)));
+    painter->setFont(boldFont);
+    painter->drawText(QRect(rect.left() + leftPadding + part1width,
+                            rect.top(),
+                            rect.width(),
+                            rect.height()),
+                          opt.displayAlignment, filterText);
+
+    painter->setFont(font);
+    painter->drawText(QRect(rect.left() + leftPadding + part1width + boldWidth,
+                            rect.top(),
+                            rect.width(),
+                            rect.height()),
+                          opt.displayAlignment, filePart2);
+
+    if ( !icon.isNull() )
+    {
+        QPixmap pixmap = icon.pixmap(QSize(24,24)).scaled(16, 16,  Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        painter->drawPixmap(rect.left() + 2, rect.top() + 2, pixmap);
+    }
 }
 
 QSize QuickSearchItem::sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index ) const
 {
     QSize result = QStyledItemDelegate::sizeHint(option, index);
-    result.setHeight( 30 );
+    result.setHeight( 20 );
     return result;
 }

@@ -14,8 +14,8 @@ QuickFileOpenWidget::QuickFileOpenWidget(QWidget *parent) : QFrame(parent)
   layout->setSpacing(0);
   layout->setMargin(0);
   
-  QLineEdit *finder = new QLineEdit(this);
-  finder->setMinimumWidth( 250 );
+  m_finder = new QLineEdit(this);
+  m_finder->setMinimumWidth( 250 );
   
   m_fileListView = new QListView(this);
   m_fileListView->viewport()->setAutoFillBackground(true);
@@ -24,32 +24,55 @@ QuickFileOpenWidget::QuickFileOpenWidget(QWidget *parent) : QFrame(parent)
   m_model = new QStandardItemModel(this);
   m_fileListView->setModel(m_model);
 
-  layout->addWidget(finder);
+  layout->addWidget(m_finder);
   layout->addWidget(m_fileListView);
 
   this->setLayout(layout);
   this->setFixedSize(QSize(400,250));
   this->setAutoFillBackground(false);
-  finder->setFocus();
+  m_finder->setFocus();
+
+  connect( m_finder, &QLineEdit::textChanged, this, &QuickFileOpenWidget::filterChanged);
 }
 
-void QuickFileOpenWidget::setFileList(const QStringList fileList)
+void QuickFileOpenWidget::filterChanged(QString filterText)
 {
-    //m_model = new QStandardItemModel(this);
     m_model->clear();
-    m_model->setColumnCount(2);
-    m_model->setRowCount(fileList.count());
+    m_model->setColumnCount(3);
 
-    for(int row = 0; row < fileList.count(); row++)
+    QStringList matchList;
+
+    for (int i=0; i<m_listFile->count(); i++ )
     {
-        QString fileName = fileList.at(row);
+        QString filepath = m_listFile->at(i);
+        if ( filepath.contains(filterText, Qt::CaseInsensitive) )
+        {
+            matchList << filepath;
+        }
+    }
+
+    m_model->setRowCount(matchList.size() < 10 ? matchList.size() : 10);
+
+    for(int row = 0; row < matchList.count(); row++)
+    {
+        QString fileName = matchList.at(row);
         QFileInfo *info = new QFileInfo(fileName);
 
         QIcon icon = Tools::getInstance().getIconForFile(info);
 
-        m_model->setData(m_model->index(row, 0), fileList.at(row));
+        m_model->setData(m_model->index(row, 0), fileName);
         m_model->setData(m_model->index(row, 1), icon);
+        m_model->setData(m_model->index(row, 2), filterText);
     }
+
+    m_fileListView->setCurrentIndex(m_model->index(0,0));
+}
+
+void QuickFileOpenWidget::setFileList(QStringList fileList)
+{
+    m_listFile = &fileList;
+    m_finder->setText("");
+    filterChanged("");
 }
 
 void MainWindow::showQuickOpenPopup()

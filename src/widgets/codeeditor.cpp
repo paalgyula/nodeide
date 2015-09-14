@@ -158,16 +158,6 @@ void CodeEditor::getCursorPosition(int &line, int &col)
     col = this->pos_col + 1;
 }
 
-QString CodeEditor::documentName()
-{
-    return QFileInfo(*m_file).fileName();
-}
-
-bool CodeEditor::isModified()
-{
-    return m_editor->isModified();
-}
-
 void CodeEditor::setFocus()
 {
     m_editor->setFocus();

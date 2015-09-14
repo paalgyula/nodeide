@@ -18,10 +18,12 @@ public:
     bool requestClose();
     void reformat();
     void getCursorPosition(int &line, int &col);
-    QString documentName();
-    bool isModified();
+    QString documentName() { return QFileInfo(*m_file).fileName(); }
+    QString documentPath() { return QFileInfo(*m_file).absoluteFilePath(); }
+    bool isModified() { return m_editor->isModified(); }
     void setFocus();
     ~CodeEditor();
+
 private:
     QsciScintilla *m_editor;
     QFile *m_file;

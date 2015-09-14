@@ -195,6 +195,16 @@ void MainWindow::tabChanged(int currentTab)
 
 void MainWindow::openFile(QFileInfo *info)
 {
+    for( int i=0; i<m_documentTabs->count(); i++ )
+    {
+        CodeEditor *editor = (CodeEditor*)m_documentTabs->widget(i);
+        if ( editor->documentPath() == info->absoluteFilePath() )
+        {
+            m_documentTabs->setCurrentIndex(i);
+            return;
+        }
+    }
+
     CodeEditor *editor = new CodeEditor(this);
     editor->setDocument(*info);
     QIcon icon = Tools::getInstance().getIconForFile(info);
