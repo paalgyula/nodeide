@@ -4,7 +4,8 @@
 #include <QFrame>
 #include <QPoint>
 #include <QStringList>
-#include <QListWidget>
+#include <QListView>
+#include <QStandardItemModel>
 
 class QuickFileOpenWidget : public QFrame
 {
@@ -13,7 +14,9 @@ public:
   void setPosition( QPoint position );
   void setFileList( const QStringList fileList );
 private:
-  QListWidget *m_fileListWidget;
+  QStringList *m_listFile;
+  QListView *m_fileListView;
+  QStandardItemModel *m_model;
 };
 
 #endif // QUICKFILEOPENWIDGET_H

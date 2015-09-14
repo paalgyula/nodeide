@@ -12,6 +12,7 @@
 #include <Qsci/qsciapis.h>
 
 #include <src/highlighter/JSLexer.h>
+#include <src/mimetypehelper.h>
 
 CodeEditor::CodeEditor(QWidget *parent) :
     QWidget(parent),
@@ -20,15 +21,7 @@ CodeEditor::CodeEditor(QWidget *parent) :
 {
     m_editor = new QsciScintilla;
 
-    QFont font;
-#ifndef WIN32
-    font.setFamily("Courier");
-#else
-    font.setFamily("Monospace");
-#endif
-    font.setFixedPitch(true);
-    font.setStyleHint(QFont::Monospace);
-    font.setPointSize(10);
+    QFont font = Tools::getInstance().monoFont();
 
     m_cursorPositionLabel = new QLabel(this);
     m_cursorPositionLabel->setText("Line: 1, Col: 1");

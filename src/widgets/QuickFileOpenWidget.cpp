@@ -2,6 +2,8 @@
 
 #include <QVBoxLayout>
 #include <QLineEdit>
+#include <QDebug>
+#include <src/widgets/lists/QuickSearchItem.h>
 
 #include "QuickFileOpenWidget.h"
 
@@ -14,24 +16,39 @@ QuickFileOpenWidget::QuickFileOpenWidget(QWidget *parent) : QFrame(parent)
   QLineEdit *finder = new QLineEdit(this);
   finder->setMinimumWidth( 250 );
   
-  m_fileListWidget = new QListWidget(this);
-  
+  m_fileListView = new QListView(this);
+  m_fileListView->viewport()->setAutoFillBackground(true);
+  m_fileListView->setItemDelegate(new QuickSearchItem(m_fileListView));
+
+  m_model = new QStandardItemModel(this);
+  m_fileListView->setModel(m_model);
+
   layout->addWidget(finder);
-  layout->addWidget(m_fileListWidget);
-  layout->addWidget( new QPushButton("Anyad", this ) );
-  
+  layout->addWidget(m_fileListView);
+
   this->setLayout(layout);
   this->setFixedSize(QSize(400,250));
   this->setAutoFillBackground(false);
   finder->setFocus();
-  
 }
 
 void QuickFileOpenWidget::setFileList(const QStringList fileList)
 {
-  m_fileListWidget->clear();
-  m_fileListWidget->addItems(fileList);
-  m_fileListWidget->setWindowOpacity(50);
+    //m_model = new QStandardItemModel(this);
+    m_model->clear();
+    m_model->setColumnCount(2);
+    m_model->setRowCount(fileList.count());
+
+    for(int row = 0; row < fileList.count(); row++)
+    {
+        QString fileName = fileList.at(row);
+        QFileInfo *info = new QFileInfo(fileName);
+
+        QIcon icon = Tools::getInstance().getIconForFile(info);
+
+        m_model->setData(m_model->index(row, 0), fileList.at(row));
+        m_model->setData(m_model->index(row, 1), icon);
+    }
 }
 
 void MainWindow::showQuickOpenPopup()

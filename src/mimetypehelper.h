@@ -22,12 +22,12 @@ public:
 
     QIcon getIconForFile(QFileInfo *info)
     {
-        QMimeDatabase db;
-        QMimeType type = db.mimeTypeForFile(info->fileName());
-
         QIcon mimeIcon;
 
 #ifdef __linux__
+        QMimeDatabase db;
+        QMimeType type = db.mimeTypeForFile(info->fileName());
+
         QString filePath = QString("/usr/share/icons/oxygen/16x16/mimetypes/%1.png")
                 .arg(type.name()
                      .replace("/", "-"));
@@ -61,6 +61,20 @@ public:
         }
 
         return mimeIcon;
+    }
+
+    const QFont monoFont() {
+        QFont font;
+    #ifndef WIN32
+        font.setFamily("Courier");
+    #else
+        font.setFamily("Monospace");
+    #endif
+        font.setFixedPitch(true);
+        font.setStyleHint(QFont::Monospace);
+        font.setPointSize(10);
+
+        return font;
     }
 };
 
