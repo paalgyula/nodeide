@@ -10,6 +10,8 @@
 #include <Qsci/qsciscintilla.h>
 #include <Qsci/qsciabstractapis.h>
 #include <Qsci/qsciapis.h>
+#include <Qsci/qscilexerpython.h>
+#include <Qsci/qscilexerhtml.h>
 
 #include <src/highlighter/JSLexer.h>
 #include <src/mimetypehelper.h>
@@ -30,11 +32,6 @@ CodeEditor::CodeEditor(QWidget *parent) :
     m_editor->setMarginWidth(0, 40);
     m_editor->setMarginLineNumbers(0, true);
 
-    JSLexer *lexer = new JSLexer(m_editor);
-    lexer->setDefaultFont(font);
-    lexer->setDefaultPaper( QColor(73, 76, 78) );
-
-    m_editor->setLexer(lexer);
     m_editor->setAutoIndent(true);
 
     m_editor->setTabWidth(4);
@@ -67,8 +64,10 @@ CodeEditor::CodeEditor(QWidget *parent) :
     this->setLayout( layout );
 }
 
-void CodeEditor::setDocument(QFile *file)
+void CodeEditor::setDocument(const QFileInfo info)
 {
+    QFile *file = new QFile(info.filePath());
+
     if (!file->open(QFile::ReadOnly))
     {
         QMessageBox::warning(this, tr("Application"),
@@ -76,6 +75,24 @@ void CodeEditor::setDocument(QFile *file)
                              .arg(file->fileName())
                              .arg(file->errorString()));
         return;
+    }
+
+    QsciLexer *lexer = NULL;
+    QString ext = info.suffix().toLower();
+
+    if ( ext == "html" )
+    {
+        lexer = new QsciLexerHTML(m_editor);
+    }
+    else if ( ext == "js" || ext == "json" )
+    {
+        lexer = new JSLexer(m_editor);
+    }
+
+    if ( lexer )
+    {
+        lexer->setDefaultFont(Tools::getInstance().monoFont());
+        m_editor->setLexer(lexer);
     }
 
     m_file = file;

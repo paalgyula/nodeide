@@ -2,6 +2,7 @@
 #define CODEEDITOR_H
 
 #include <QFile>
+#include <QFileInfo>
 #include <QLabel>
 #include <QWidget>
 
@@ -12,7 +13,7 @@ class CodeEditor : public QWidget
     Q_OBJECT
 public:
     explicit CodeEditor(QWidget *parent = 0);
-    void setDocument(QFile *file);
+    void setDocument(const QFileInfo info);
     void save();
     bool requestClose();
     void reformat();

@@ -196,7 +196,7 @@ void MainWindow::tabChanged(int currentTab)
 void MainWindow::openFile(QFileInfo *info)
 {
     CodeEditor *editor = new CodeEditor(this);
-    editor->setDocument(new QFile(info->absoluteFilePath()));
+    editor->setDocument(*info);
     QIcon icon = Tools::getInstance().getIconForFile(info);
 
     int tabIndex = -1;
