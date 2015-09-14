@@ -1,5 +1,6 @@
 #include "JSLexer.h"
 
+#include <src/mimetypehelper.h>
 #include <Qsci/qscilexerjavascript.h>
 
 JSLexer::JSLexer(QObject *parent) : QsciLexerJavaScript(parent)
@@ -104,6 +105,12 @@ QColor JSLexer::defaultColor(int style) const
 
     return QColor("#FFFFFF");
     //    return QsciLexer::defaultColor(style);
+}
+
+QFont JSLexer::defaultFont(int style) const
+{
+    Q_UNUSED(style);
+    return Tools::getInstance().monoFont();
 }
 
 const char *JSLexer::keywords(int set) const

@@ -12,5 +12,6 @@ public:
     JSLexer(QObject *parent = 0);
     QColor defaultPaper(int style) const;
     QColor defaultColor(int style) const;
+    QFont defaultFont(int style) const;
     const char *keywords(int set) const;
 };

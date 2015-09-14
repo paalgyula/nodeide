@@ -20,7 +20,8 @@ SOURCES += src/main.cpp\
     src/widgets/npmstatusbar.cpp \
     src/widgets/QuickFileOpenWidget.cpp \
     src/widgets/ProjectExplorer.cpp \
-    src/widgets/lists/QuickSearchItem.cpp
+    src/widgets/lists/QuickSearchItem.cpp \
+    src/widgets/lists/FileTreeWidgetItem.cpp
 
 HEADERS  += src/mainwindow.h \
     src/highlighter/JSLexer.h \
@@ -31,7 +32,8 @@ HEADERS  += src/mainwindow.h \
     src/widgets/npmstatusbar.h \
     src/widgets/QuickFileOpenWidget.h \
     src/widgets/ProjectExplorer.h \
-    src/widgets/lists/QuickSearchItem.h
+    src/widgets/lists/QuickSearchItem.h \
+    src/widgets/lists/FileTreeWidgetItem.h
 
 RESOURCES += \
     resources.qrc

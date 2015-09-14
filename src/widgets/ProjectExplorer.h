@@ -27,6 +27,8 @@ signals:
 
 public slots:
     void itemClicked(QTreeWidgetItem* item, int index);
+private slots:
+    void expanded(QTreeWidgetItem *widgetItem);
 };
 
 #endif // PROJECTEXPLORER_H

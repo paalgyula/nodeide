@@ -20,7 +20,7 @@ public:
           return INSTANCE;
     }
 
-    QIcon getIconForFile(QFileInfo *info)
+    QIcon getIconForFile(const QFileInfo *info)
     {
         QIcon mimeIcon;
 
@@ -43,22 +43,22 @@ public:
         //mimeIcon = QIcon(":/icons/mime/text.png");
 #endif
 
-        if ( mimeIcon.isNull() ) {
-            QString icon = "text";
-            QString suffix = info->suffix().toLower().trimmed();
-            if ( suffix == "json" )
-                icon = "json";
-            else if (suffix == "js")
-                icon = "javascript";
-            else if (suffix == "jade")
-                icon = "jade";
-            else if (suffix == "htm")
-                icon = "html";
-            else if (suffix == "html")
-                icon = "html";
+        // Override :D
+        QString icon = "";
+        QString suffix = info->suffix().toLower().trimmed();
+        if ( suffix == "json" )
+            icon = "json";
+        else if (suffix == "js")
+            icon = "javascript";
+        else if (suffix == "jade")
+            icon = "jade";
+        else if (suffix == "htm")
+            icon = "html";
+        else if (suffix == "html")
+            icon = "html";
 
+        if ( icon != "" )
             mimeIcon = QIcon(QString(":/icons/mime/%1.png").arg(icon));
-        }
 
         return mimeIcon;
     }
@@ -74,6 +74,11 @@ public:
         font.setStyleHint(QFont::Monospace);
         font.setPointSize(10);
 
+        return font;
+    }
+
+    const QFont defaultFont() {
+        QFont font;
         return font;
     }
 };

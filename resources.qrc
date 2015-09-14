@@ -24,5 +24,9 @@
         <file>icons/options.png</file>
         <file>icons/search.png</file>
         <file>icons/shock.png</file>
+        <file>icons/bird.png</file>
+        <file>icons/tick.png</file>
+        <file>icons/route.png</file>
+        <file>icons/globe.png</file>
     </qresource>
 </RCC>

@@ -235,7 +235,7 @@ void MainWindow::openProject()
     
     _workingDir = selectedDir;
     _projectFiles->clear();
-    QDirIterator it(_workingDir, QStringList() << "*", QDir::Files, QDirIterator::Subdirectories);
+    QDirIterator it(_workingDir, QStringList() << "*", QDir::Files | QDir::Hidden, QDirIterator::Subdirectories);
     while (it.hasNext()) {
       QString path = it.next().replace( _workingDir, "" );
       if ( path.startsWith("/node_modules/") ||

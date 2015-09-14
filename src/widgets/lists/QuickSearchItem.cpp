@@ -13,9 +13,8 @@ void QuickSearchItem::paint(QPainter* painter, const QStyleOptionViewItem& optio
     QStyleOptionViewItemV4 opt = option;
     initStyleOption(&opt, index);
 
-    QString line0 = index.model()->data(index.model()->index(index.row(), 0)).toString();
+    QString fileName = index.model()->data(index.model()->index(index.row(), 0)).toString();
     QIcon icon = qvariant_cast<QIcon>(index.model()->data(index.model()->index(index.row(), 1)));
-    //QString line1 = index.model()->data(index.model()->index(index.row(), 1)).toString();
 
     QRect rect = opt.rect;
 
@@ -34,12 +33,11 @@ void QuickSearchItem::paint(QPainter* painter, const QStyleOptionViewItem& optio
     else
         painter->setPen(opt.palette.color(cg, QPalette::Text));*/
 
-    QFont font = Tools::getInstance().monoFont();
+    QFont font = Tools::getInstance().defaultFont();
     painter->setFont(font);
 
     QFontMetrics metric(font);
-    int width = metric.width( line0 );
-    int height = metric.height();
+    int width = metric.width( fileName );
 
     // draw 2 lines of text
     /*painter->drawText(QRect(rect.left() + rect.height() + 5, rect.top() + 2, rect.width(), rect.height()/2),
@@ -51,7 +49,7 @@ void QuickSearchItem::paint(QPainter* painter, const QStyleOptionViewItem& optio
                             rect.top(),
                             rect.left() + rect.height() + 5 + width,
                             rect.height()),
-                          opt.displayAlignment, line0);
+                          opt.displayAlignment, fileName);
 
     painter->drawText(QRect(rect.left() + rect.height() + 5 + width,
                             rect.top(),

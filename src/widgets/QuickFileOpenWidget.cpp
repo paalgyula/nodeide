@@ -3,6 +3,7 @@
 #include <QVBoxLayout>
 #include <QLineEdit>
 #include <QDebug>
+#include <QDialog>
 #include <src/widgets/lists/QuickSearchItem.h>
 
 #include "QuickFileOpenWidget.h"
@@ -55,9 +56,20 @@ void MainWindow::showQuickOpenPopup()
 {
   if ( m_quickOpen )
     m_quickOpen->deleteLater();
+
+  QDialog *dialog = new QDialog(this);
+  dialog->setWindowIcon( QIcon(":/icons/shock.png") );
+  dialog->setWindowTitle(tr("Quick open.."));
   
-  m_quickOpen = new QuickFileOpenWidget(this);
-  m_quickOpen->move(QPoint(40, 40));
+  m_quickOpen = new QuickFileOpenWidget(dialog);
+  //m_quickOpen->move(QPoint(40, 40));
   m_quickOpen->setFileList(*_projectFiles);
-  m_quickOpen->show();
+
+  QHBoxLayout *layout = new QHBoxLayout();
+  layout->setMargin(0);
+  layout->setSpacing(2);
+  layout->addWidget(m_quickOpen);
+
+  dialog->setLayout(layout);
+  dialog->exec();
 }

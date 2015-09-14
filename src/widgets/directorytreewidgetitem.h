@@ -8,6 +8,7 @@ class DirectoryTreeWidgetItem : public QTreeWidgetItem
 {
 public:
     DirectoryTreeWidgetItem(QFileInfo info);
+    void reload();
 private:
     const QFileInfo m_info;
 };

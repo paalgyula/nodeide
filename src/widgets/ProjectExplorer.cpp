@@ -11,6 +11,8 @@
 #include <QJsonObject>
 #include <QDebug>
 
+#include <src/widgets/lists/FileTreeWidgetItem.h>
+
 ProjectExplorer::ProjectExplorer(QWidget *parent, QString projectDirectory) : QWidget(parent), m_projectDir(projectDirectory)
 {
     m_tree = new QTreeWidget(this);
@@ -41,38 +43,24 @@ void ProjectExplorer::itemClicked(QTreeWidgetItem *item, int index)
 
 void ProjectExplorer::loadProjectDir(const QString projectDirectory)
 {
+    m_projectDir = projectDirectory;
     m_tree->clear();
-    m_tree->setIconSize(QSize(24,24));
 
-    QTreeWidgetItem *root = new QTreeWidgetItem(0);
-    root->setText(0, "Project root");
+    QFileInfo rootInfo(projectDirectory);
+    DirectoryTreeWidgetItem *root = new DirectoryTreeWidgetItem(rootInfo);
+    root->setText(0, QString("Project - %1").arg(rootInfo.fileName()) );
     root->setIcon(0, QIcon(":/icons/nodejs.png"));
 
     m_tree->addTopLevelItem( root );
     m_tree->setRootIsDecorated(false);
-
-    m_projectDir = projectDirectory;
-    QDir *projectDir = new QDir(m_projectDir);
-    QFileInfoList files = projectDir->entryInfoList(QDir::NoFilter, QDir::DirsFirst);
-
-    for (int i = 0; i < files.size(); ++i) {
-        QFileInfo info = files.at(i);
-
-        if ( info.isDir() )
-        {
-            if ( info.fileName() != "." && info.fileName() != ".." )
-                root->addChild( new DirectoryTreeWidgetItem(info) );
-        }
-        else
-        {
-            QTreeWidgetItem *item = new QTreeWidgetItem(0);
-            item->setText(0, info.fileName() );
-            item->setWhatsThis(0, info.absoluteFilePath());
-            root->addChild(item);
-
-            item->setIcon(0, Tools::getInstance().getIconForFile(&info));
-        }
-    }
-
+    root->reload();
     root->setExpanded(true);
+
+    connect(m_tree, SIGNAL(itemExpanded(QTreeWidgetItem*)), this, SLOT(expanded(QTreeWidgetItem*)));
+}
+
+void ProjectExplorer::expanded(QTreeWidgetItem *widgetItem)
+{
+    DirectoryTreeWidgetItem *item = (DirectoryTreeWidgetItem*)widgetItem;
+    item->reload();
 }
