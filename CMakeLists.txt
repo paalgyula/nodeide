@@ -23,6 +23,7 @@ set(SOURCE
   src/widgets/projectexplorer.cpp
   src/widgets/runconfigurationswidget.cpp
   src/widgets/QuickFileOpenWidget.cpp
+  src/widgets/lists/QuickSearchItem.cpp
 )
 
 set(HEADERS
@@ -35,6 +36,7 @@ set(HEADERS
   src/widgets/projectexplorer.h
   src/widgets/runconfigurationswidget.h
   src/widgets/QuickFileOpenWidget.h
+  src/widgets/lists/QuickSearchItem.h
 )
 
 QT5_ADD_RESOURCES(RESOURCES resources.qrc)
