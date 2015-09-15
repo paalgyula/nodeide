@@ -84,7 +84,7 @@ void CodeEditor::setDocument(const QFileInfo info)
     {
         lexer = new QsciLexerHTML(m_editor);
     }
-    else if ( ext == "js" || ext == "json" )
+    else if ( ext == "js" || ext == "json" || ext == "jade" )
     {
         lexer = new JSLexer(m_editor);
     }

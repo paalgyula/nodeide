@@ -44,7 +44,7 @@ public slots:
     void newFile();
     void openFile(QFileInfo *info);
     void closeFile(int tabIndex);
-    void openProject();
+    void openProject(QString selectedDir = "");
     void tabChanged(int currentTab);
     void closeCurrentTab();
     void saveFile();

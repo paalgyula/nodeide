@@ -1,0 +1,8 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Name=Node.js IDE
+GenericName=node.js development environment
+Exec=nodeide
+Icon=nodeide.png
+Type=Application
+Categories=Development;IDE

@@ -8,6 +8,8 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
+INCLUDEPATH += ../qscintilla/Qt4Qt5
+
 TARGET = nodeide
 TEMPLATE = app
 
@@ -38,7 +40,7 @@ HEADERS  += src/mainwindow.h \
 RESOURCES += \
     resources.qrc
 
-unix:LIBS += -lqscintilla2
+unix:LIBS += ../qscintilla/Qt4Qt5/libqscintilla2.so
 
 win32:LIBS += -LC:/releases/qscintilla/release/ -lqscintilla2
 win32:INCLUDEPATH += C:/wspace/QScintilla-gpl-2.9/Qt4Qt5
@@ -46,3 +48,14 @@ win32:INCLUDEPATH += C:/wspace/QScintilla-gpl-2.9/Qt4Qt5
 CONFIG += c++11 static
 
 win32:RC_ICONS = icons/logo.ico
+
+target.path = /usr/local/bin
+
+desktop_file.path = /usr/share/applications
+desktop_file.files = nodeide.desktop
+
+desktop_icon.path = /usr/share/icons
+desktop_icon.files = icons/nodeide.png
+
+INSTALLS += target desktop_file
+

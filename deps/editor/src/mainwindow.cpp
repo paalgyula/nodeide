@@ -22,6 +22,7 @@
 #include <QFileDialog>
 #include <QDirIterator>
 #include <QToolButton>
+#include <QSettings>
 
 #include <src/widgets/codeeditor.h>
 #include <src/widgets/ProjectExplorer.h>
@@ -67,6 +68,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(m_documentTabs, &QTabWidget::currentChanged, this, &MainWindow::tabChanged);
 
     this->setMinimumSize(QSize(700, 400));
+
+    QSettings settings;
+    QString lastProjectDir = settings.value("lastProjectDir").toString();
+    if ( !lastProjectDir.isEmpty() )
+    {
+        openProject( lastProjectDir );
+    }
 }
 
 MainWindow::~MainWindow()
@@ -230,15 +238,18 @@ void MainWindow::closeFile(int tabIndex)
     }
 }
 
-void MainWindow::openProject()
+void MainWindow::openProject(QString selectedDir)
 {
+    if ( selectedDir.isEmpty() )
+    {
 #ifdef QT_DEBUG
-    QString selectedDir = QFileDialog::getExistingDirectory(this, tr("Open Directory"), "/home/paalgyula/wspace/tracker",
+    selectedDir = QFileDialog::getExistingDirectory(this, tr("Open Directory"), "/home/paalgyula/wspace/tracker",
                                       QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 #else
-    QString selectedDir = QFileDialog::getExistingDirectory(this, tr("Open Directory"), "",
+    selectedDir = QFileDialog::getExistingDirectory(this, tr("Open Directory"), "",
                                       QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 #endif
+    }
     // Cancel
     if (selectedDir.isEmpty())
         return;
@@ -272,6 +283,8 @@ void MainWindow::openProject()
     }
 
     m_projectExplorer->loadProjectDir( _workingDir );
+    QSettings settings;
+    settings.setValue("lastProjectDir", _workingDir);
 }
 
 void MainWindow::closeCurrentTab()
