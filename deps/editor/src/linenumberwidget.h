@@ -1,7 +1,7 @@
 #ifndef LINENUMBERWIDGET
 #define LINENUMBERWIDGET
 
-#include "editor.h"
+#include "QCodeEditor.h"
 
 #include <QWidget>
 

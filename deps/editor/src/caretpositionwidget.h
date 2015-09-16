@@ -1,7 +1,7 @@
 #ifndef CARETPOSITIONWIDGET
 #define CARETPOSITIONWIDGET
 
-#include "editor.h"
+#include "QCodeEditor.h"
 
 #include <QWidget>
 

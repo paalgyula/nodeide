@@ -1,4 +1,4 @@
-#include "editor.h"
+#include "QCodeEditor.h"
 
 #include "caretpositionwidget.h"
 #include "highlighter.h"
@@ -6,6 +6,9 @@
 
 #include <QPainter>
 #include <QTextStream>
+
+#include <QTextDocumentFragment>
+#include <QDebug>
 
 QCodeEditor::QCodeEditor(QWidget *parent) : QPlainTextEdit(parent)
 {
@@ -42,6 +45,12 @@ QCodeEditor::QCodeEditor(QWidget *parent) : QPlainTextEdit(parent)
     caretWidgetFont.setFamily(caretWidgetFont.defaultFamily());
     caretWidgetFont.setPointSize(8);
     caretWidgetFont.setFixedPitch(false);
+
+    _tabSize = 2;
+
+    QTextOption textOption = document()->defaultTextOption();
+    //textOption.setFlags(QTextOption::ShowTabsAndSpaces | QTextOption::ShowLineAndParagraphSeparators);
+    document()->setDefaultTextOption(textOption);
 }
 
 int QCodeEditor::lineNumberAreaWidth()
@@ -82,6 +91,114 @@ void QCodeEditor::updateCaretWidget()
                                         caretWidgetHeight)
                                     );
     caretPositionArea->update();
+}
+
+void QCodeEditor::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Tab)
+    {
+        //int cursorPosition = cur.position();
+        QTextCursor cur = textCursor();
+        if (!cur.hasSelection())
+        {
+            cur.insertText(QString("%1").arg(" ", _tabSize));
+        }
+        else // Ident selection
+        {
+            QTextCursor *helper = new QTextCursor(document());
+            helper->setPosition(cur.anchor());
+            // selection row number
+            int startSelection = helper->blockNumber();
+            helper->setPosition(cur.position());
+            int endSelection = helper->blockNumber();
+
+            helper->beginEditBlock();
+            {
+                for ( ;; )
+                {
+                    helper->movePosition(QTextCursor::StartOfLine);
+                    helper->insertText(QString("%1").arg(" ", _tabSize));
+
+                    if ( startSelection == helper->blockNumber() )
+                        break;
+                    helper->movePosition( startSelection > endSelection ? QTextCursor::Down : QTextCursor::Up);
+                };
+            }
+            helper->endEditBlock();
+            delete helper;
+        }
+
+    }
+    else if (event->key() == Qt::Key_Backtab) // Shift + Tab
+    {
+        QTextCursor cur = textCursor();
+        QTextCursor helper = textCursor();
+        QRegExp unidentRegexp(QString("^[\\ ]{0,%1}").arg(QString::number(_tabSize)));
+
+        if (!cur.hasSelection())
+        {
+            helper.movePosition(QTextCursor::StartOfLine);
+
+            for (int i=0;i<_tabSize;i++)
+            {
+                if (helper.block().text().startsWith(" "))
+                {
+                    helper.clearSelection();
+                    helper.deleteChar();
+                }
+            }
+        }
+        else // Ident selection
+        {
+            QTextCursor *helper = new QTextCursor(document());
+            helper->setPosition(cur.anchor());
+            // selection row number
+            int startSelection = helper->blockNumber();
+            helper->setPosition(cur.position());
+            int endSelection = helper->blockNumber();
+
+            helper->beginEditBlock();
+            {
+                for ( ;; )
+                {
+                    helper->movePosition(QTextCursor::StartOfLine);
+
+                    for (int i=0;i<_tabSize;i++)
+                    {
+                        if (helper->block().text().startsWith(" "))
+                        {
+                            helper->clearSelection();
+                            helper->deleteChar();
+                        }
+                    }
+
+                    if ( startSelection == helper->blockNumber() )
+                        break;
+
+                    helper->movePosition( startSelection > endSelection ? QTextCursor::Down : QTextCursor::Up);
+                };
+            }
+            helper->endEditBlock();
+            delete helper;
+        }
+
+    }
+    else
+        QPlainTextEdit::keyPressEvent(event);
+}
+
+bool QCodeEditor::event(QEvent *event)
+{
+    if ( event->type() == QEvent::KeyPress )
+    {
+        QKeyEvent *ke = static_cast<QKeyEvent*>(event);
+        if (ke->key() == Qt::Key_Tab || ke->key() == Qt::Key_Backtab) {
+            QCodeEditor::keyPressEvent(ke);
+            return true;
+        }
+    }
+
+    return QPlainTextEdit::event(event);
 }
 
 void QCodeEditor::updateLineNumberAreaWidth(int /* newBlockCount */)
@@ -228,7 +345,7 @@ Highlighter::Highlighter(QTextDocument *parent) : QSyntaxHighlighter(parent)
             "debugger default delete do else export "
             "extends finally for function if import "
             "in instanceof let new return super switch "
-            "this throw try typeof var void while with yield")
+            "this throw try typeof var void while with yield null")
             .split(" ");
 
     foreach (const QString &pattern, keywordPatterns) {
@@ -262,13 +379,13 @@ Highlighter::Highlighter(QTextDocument *parent) : QSyntaxHighlighter(parent)
     highlightingRules.append(rule);
 
     quotationFormat.setForeground(QColor("#C6F079"));
-    rule.pattern = QRegExp("(\".*\")|(\'.*\')");
+    rule.pattern = QRegExp("(\"[^\"]+\")|(\'[^\']+\')");
     rule.format = quotationFormat;
     highlightingRules.append(rule);
 
     QTextCharFormat commentFormat;
     commentFormat.setForeground(Qt::gray);
-    rule.pattern = QRegExp("//.*$");
+    rule.pattern = QRegExp("[^:]//.*$");
     rule.format = commentFormat;
     highlightingRules.append(rule);
 }

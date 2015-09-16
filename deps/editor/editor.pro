@@ -10,6 +10,9 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = nodeide
 TEMPLATE = app
+LANGUAGE = C++
+
+PRECOMPILED_HEADER = src/StdAfx.h
 
 SOURCES += src/main.cpp\
         src/mainwindow.cpp \
@@ -21,9 +24,10 @@ SOURCES += src/main.cpp\
     src/widgets/ProjectExplorer.cpp \
     src/widgets/lists/QuickSearchItem.cpp \
     src/widgets/lists/FileTreeWidgetItem.cpp \
-    src/editor.cpp
+    src/QCodeEditor.cpp
 
-HEADERS  += src/mainwindow.h \
+HEADERS  += src/StdAfx.h \
+    src/mainwindow.h \
     src/widgets/directorytreewidgetitem.h \
     src/widgets/codeeditor.h \
     src/mimetypehelper.h \
@@ -33,10 +37,11 @@ HEADERS  += src/mainwindow.h \
     src/widgets/ProjectExplorer.h \
     src/widgets/lists/QuickSearchItem.h \
     src/widgets/lists/FileTreeWidgetItem.h \
-    src/editor.h \
     src/highlighter.h \
     src/linenumberwidget.h \
-    src/caretpositionwidget.h
+    src/caretpositionwidget.h \
+    src/QCodeEditor.h \
+    src/StdAfx.h
 
 RESOURCES += \
     resources.qrc
@@ -45,7 +50,7 @@ RESOURCES += \
 #INCLUDEPATH += ../qcodeeditor
 #LIBS += -L../qcodeeditor/ -lqcodeeditor
 
-CONFIG += c++11 static
+CONFIG += c++11 static precompile_header
 
 win32:RC_ICONS = icons/logo.ico
 

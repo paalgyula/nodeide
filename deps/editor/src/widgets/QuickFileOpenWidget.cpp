@@ -4,6 +4,7 @@
 #include <QLineEdit>
 #include <QDebug>
 #include <QDialog>
+#include <QCompleter>
 #include <src/widgets/lists/QuickSearchItem.h>
 
 #include "QuickFileOpenWidget.h"
@@ -31,6 +32,11 @@ QuickFileOpenWidget::QuickFileOpenWidget(QWidget *parent) : QFrame(parent)
   this->setFixedSize(QSize(400,250));
   this->setAutoFillBackground(false);
   m_finder->setFocus();
+
+  QCompleter *completer = new QCompleter(m_finder);
+  completer->setModel( m_model );
+  completer->setCompletionMode(QCompleter::UnfilteredPopupCompletion);
+  m_finder->setCompleter( completer );
 
   connect( m_finder, &QLineEdit::textChanged, this, &QuickFileOpenWidget::filterChanged);
 }

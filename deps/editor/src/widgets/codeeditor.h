@@ -6,7 +6,7 @@
 #include <QLabel>
 #include <QWidget>
 
-#include <src/editor.h>
+#include <src/QCodeEditor.h>
 
 class CodeEditor : public QWidget
 {

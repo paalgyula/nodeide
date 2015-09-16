@@ -15,8 +15,9 @@ public:
     int lineNumberAreaWidth();
     int caretPositionAreaWidth();
 
-protected:
-    void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
+    // Tab size
+    void setTabSize(int tabSize) { this->_tabSize = tabSize; }
+    int tabSize() { return this->_tabSize; }
 
 public slots:
     void updateLineNumberAreaWidth(int newBlockCount);
@@ -32,6 +33,14 @@ private:
     QString positionStr;
 
     QFont caretWidgetFont;
+
+    int _tabSize;
+
+    // QWidget interface
+protected:
+    void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
+    void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
+    bool event(QEvent *event) Q_DECL_OVERRIDE;
 };
 
 #endif // EDITOR_H

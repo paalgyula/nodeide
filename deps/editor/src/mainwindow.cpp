@@ -1,4 +1,4 @@
-#include "editor.h"
+#include "QCodeEditor.h"
 #include "mainwindow.h"
 
 #include <QCompleter>
@@ -28,8 +28,6 @@
 #include <src/widgets/codeeditor.h>
 #include <src/widgets/ProjectExplorer.h>
 #include <src/widgets/runconfigurationswidget.h>
-
-#include <Qsci/qsciscintilla.h>
 
 #include <src/mimetypehelper.h>
 
@@ -114,13 +112,6 @@ void MainWindow::createMainMenu()
 
     windowMenu->addAction("Close current tab", this, SLOT(closeCurrentTab()), QKeySequence( Qt::CTRL + Qt::Key_W ));
     m_actionQuickOpen = windowMenu->addAction( QIcon(":/icons/shock.png"), "Quick open file...", this, SLOT(showQuickOpenPopup()), QKeySequence( Qt::CTRL + Qt::Key_P ));
-
-    mainMenu->addSeparator();
-
-    // About menu
-    QMenuBar *rightMenu = new QMenuBar();
-    QMenu *aboutMenu = new QMenu(tr("About"), rightMenu);
-    rightMenu->addMenu(aboutMenu);
 
     // TODO: impelment a bugReport form
     QToolButton *bugButton = new QToolButton(this);

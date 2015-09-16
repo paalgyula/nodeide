@@ -7,7 +7,7 @@
 #include <QDialogButtonBox>
 #include <QFileInfo>
 
-#include <src/editor.h>
+#include <src/QCodeEditor.h>
 #include <src/mimetypehelper.h>
 
 CodeEditor::CodeEditor(QWidget *parent) :
@@ -31,8 +31,7 @@ CodeEditor::CodeEditor(QWidget *parent) :
     m_editor->setAutoCompletionThreshold(2);
     m_editor->setAutoCompletionSource(QsciScintilla::AcsAPIs);*/
 
-    connect( m_editor, SIGNAL(cursorPositionChanged(int,int)), this, SLOT(cursorPositionChanged(int,int)) );
-    connect( m_editor, SIGNAL(modificationChanged(bool)), this, SLOT(edited(bool)) );
+    connect( m_editor, &QCodeEditor::modificationChanged, this, &CodeEditor::edited );
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->setMargin(2);
