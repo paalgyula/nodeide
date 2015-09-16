@@ -1,3 +1,4 @@
+#include "editor.h"
 #include "mainwindow.h"
 
 #include <QCompleter>
@@ -29,9 +30,7 @@
 #include <src/widgets/runconfigurationswidget.h>
 
 #include <Qsci/qsciscintilla.h>
-#include <Qsci/qscilexerjavascript.h>
 
-#include <src/highlighter/JSLexer.h>
 #include <src/mimetypehelper.h>
 
 #define WINDOW_TITLE "NodeIDE - Paál Gyula (c) 2015"
@@ -176,13 +175,18 @@ void MainWindow::createProjectExplorer()
 
     QDockWidget *projectExplorerDock = new QDockWidget(tr("Project Explorer"), this);
     projectExplorerDock->setTitleBarWidget(new QFrame(this));
-    projectExplorerDock->setWindowIcon(QIcon(":/icons/logo.png"));
     projectExplorerDock->setWidget( m_projectExplorer );
 
     connect(m_projectExplorer, SIGNAL(openFile(QFileInfo*)), this, SLOT(openFile(QFileInfo*)));
     connect(m_projectExplorer, SIGNAL(npmUpdateReqested()), this, SLOT(updatePackages()));
 
     this->addDockWidget(Qt::LeftDockWidgetArea, projectExplorerDock);
+
+    // Console:
+    QDockWidget *consoleDockWidget = new QDockWidget(tr("Console"), this);
+    consoleDockWidget->setWidget( new QCodeEditor(this) );
+
+    this->addDockWidget(Qt::BottomDockWidgetArea, consoleDockWidget);
 }
 
 void MainWindow::newFile()
@@ -214,7 +218,7 @@ void MainWindow::openFile(QFileInfo *info)
     }
 
     CodeEditor *editor = new CodeEditor(this);
-    editor->setDocument(*info);
+    editor->loadFile(*info);
     QIcon icon = Tools::getInstance().getIconForFile(info);
 
     int tabIndex = -1;
@@ -292,7 +296,7 @@ void MainWindow::closeCurrentTab()
     CodeEditor *editor = (CodeEditor*)m_documentTabs->currentWidget();
     if ( editor != NULL && editor->requestClose()) {
         m_documentTabs->removeTab( m_documentTabs->currentIndex() );
-        delete editor;
+        editor->deleteLater();
     }
 }
 

@@ -13,7 +13,6 @@ TEMPLATE = app
 
 SOURCES += src/main.cpp\
         src/mainwindow.cpp \
-    src/highlighter/JSLexer.cpp \
     src/widgets/directorytreewidgetitem.cpp \
     src/widgets/codeeditor.cpp \
     src/widgets/runconfigurationswidget.cpp \
@@ -21,10 +20,10 @@ SOURCES += src/main.cpp\
     src/widgets/QuickFileOpenWidget.cpp \
     src/widgets/ProjectExplorer.cpp \
     src/widgets/lists/QuickSearchItem.cpp \
-    src/widgets/lists/FileTreeWidgetItem.cpp
+    src/widgets/lists/FileTreeWidgetItem.cpp \
+    src/editor.cpp
 
 HEADERS  += src/mainwindow.h \
-    src/highlighter/JSLexer.h \
     src/widgets/directorytreewidgetitem.h \
     src/widgets/codeeditor.h \
     src/mimetypehelper.h \
@@ -33,22 +32,18 @@ HEADERS  += src/mainwindow.h \
     src/widgets/QuickFileOpenWidget.h \
     src/widgets/ProjectExplorer.h \
     src/widgets/lists/QuickSearchItem.h \
-    src/widgets/lists/FileTreeWidgetItem.h
+    src/widgets/lists/FileTreeWidgetItem.h \
+    src/editor.h \
+    src/highlighter.h \
+    src/linenumberwidget.h \
+    src/caretpositionwidget.h
 
 RESOURCES += \
     resources.qrc
 
-# QScintilla2 config
-INCLUDEPATH += ../qscintilla/Qt4Qt5
-
-unix:LIBS += -L../qscintilla/Qt4Qt5/ -lqscintilla2
-
-win32:LIBS += -LC:/releases/qscintilla/release/ -lqscintilla2
-win32:INCLUDEPATH += C:/wspace/QScintilla-gpl-2.9/Qt4Qt5
-
 #QCodeEditor config
-INCLUDEPATH += ../qcodeeditor
-LIBS += -L../qcodeeditor/ -lqcodeeditor
+#INCLUDEPATH += ../qcodeeditor
+#LIBS += -L../qcodeeditor/ -lqcodeeditor
 
 CONFIG += c++11 static
 

@@ -7,28 +7,15 @@
 #include <QDialogButtonBox>
 #include <QFileInfo>
 
-#include <Qsci/qsciscintilla.h>
-#include <Qsci/qsciabstractapis.h>
-#include <Qsci/qsciapis.h>
-#include <Qsci/qscilexerpython.h>
-#include <Qsci/qscilexerhtml.h>
-
-#include <src/highlighter/JSLexer.h>
+#include <src/editor.h>
 #include <src/mimetypehelper.h>
 
 CodeEditor::CodeEditor(QWidget *parent) :
-    QWidget(parent),
-    pos_col(0),
-    pos_line(0)
+    QWidget(parent)
 {
-    m_editor = new QsciScintilla;
+    m_editor = new QCodeEditor(this);
 
-    QFont font = Tools::getInstance().monoFont();
-
-    m_cursorPositionLabel = new QLabel(this);
-    m_cursorPositionLabel->setText("Line: 1, Col: 1");
-
-    m_editor->setMarginsFont(font);
+    /*m_editor->setMarginsFont(font);
     m_editor->setMarginWidth(0, 40);
     m_editor->setMarginLineNumbers(0, true);
 
@@ -42,29 +29,18 @@ CodeEditor::CodeEditor(QWidget *parent) :
     m_editor->setMarginsForegroundColor(QColor(173, 176, 178));
 
     m_editor->setAutoCompletionThreshold(2);
-    m_editor->setAutoCompletionSource(QsciScintilla::AcsAPIs);
+    m_editor->setAutoCompletionSource(QsciScintilla::AcsAPIs);*/
 
     connect( m_editor, SIGNAL(cursorPositionChanged(int,int)), this, SLOT(cursorPositionChanged(int,int)) );
     connect( m_editor, SIGNAL(modificationChanged(bool)), this, SLOT(edited(bool)) );
 
-    QHBoxLayout *lineNumberLayout = new QHBoxLayout();
-    lineNumberLayout->addStretch();
-    lineNumberLayout->setMargin(0);
-    lineNumberLayout->addWidget(m_cursorPositionLabel);
-
-    QFrame *statusFrame = new QFrame(this);
-    //statusFrame->setFrameShape(QFrame::StyledPanel);
-    statusFrame->setLayout( lineNumberLayout );
-
     QVBoxLayout *layout = new QVBoxLayout();
     layout->setMargin(2);
     layout->addWidget( m_editor );
-    layout->addWidget( statusFrame );
-
     this->setLayout( layout );
 }
 
-void CodeEditor::setDocument(const QFileInfo info)
+void CodeEditor::loadFile(const QFileInfo info)
 {
     QFile *file = new QFile(info.filePath());
 
@@ -77,29 +53,11 @@ void CodeEditor::setDocument(const QFileInfo info)
         return;
     }
 
-    QsciLexer *lexer = NULL;
-    QString ext = info.suffix().toLower();
-
-    if ( ext == "html" )
-    {
-        lexer = new QsciLexerHTML(m_editor);
-    }
-    else if ( ext == "js" || ext == "json" || ext == "jade" )
-    {
-        lexer = new JSLexer(m_editor);
-    }
-
-    if ( lexer )
-    {
-        lexer->setDefaultFont(Tools::getInstance().monoFont());
-        m_editor->setLexer(lexer);
-    }
-
     m_file = file;
     QTextStream in(file);
-    m_editor->setText(in.readAll());
+    m_editor->setPlainText(in.readAll());
     // When load than no modification!
-    m_editor->setModified(false);
+    m_editor->document()->setModified(false);
     file->close();
 }
 
@@ -114,13 +72,13 @@ void CodeEditor::save()
         return;
     }
     QTextStream out(m_file);
-    out << m_editor->text();
-    m_editor->setModified(false);
+    out << m_editor->toPlainText();
+    m_editor->document()->setModified(false);
     m_file->close();
 }
 
 bool CodeEditor::requestClose() {
-    if ( m_editor->isModified() )
+    if ( m_editor->document()->isModified() )
     {
         int answer = QMessageBox::question(this, "Close file", "The file has been changed. Do you want to save changes?",
                                            QMessageBox::Yes |
@@ -131,31 +89,6 @@ bool CodeEditor::requestClose() {
     }
 
     return true;
-}
-
-void CodeEditor::reformat()
-{
-
-}
-
-void CodeEditor::cursorPositionChanged(int line, int col)
-{
-    this->pos_line = line;
-    this->pos_col = col;
-
-    this->m_cursorPositionLabel->setText(
-                QString("Line: %1, col: %2").arg(
-                    QString::number(line + 1),
-                    QString::number(col + 1))
-                );
-
-    emit cursorPosChanged(line, col);
-}
-
-void CodeEditor::getCursorPosition(int &line, int &col)
-{
-    line = this->pos_line + 1;
-    col = this->pos_col + 1;
 }
 
 void CodeEditor::setFocus()
@@ -172,5 +105,4 @@ CodeEditor::~CodeEditor()
 {
     delete m_editor;
     delete m_file;
-    delete m_cursorPositionLabel;
 }
