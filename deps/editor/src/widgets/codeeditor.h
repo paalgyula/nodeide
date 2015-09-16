@@ -6,8 +6,6 @@
 #include <QLabel>
 #include <QWidget>
 
-#include <Qsci/qsciscintilla.h>
-
 #include <src/editor.h>
 
 class CodeEditor : public QWidget

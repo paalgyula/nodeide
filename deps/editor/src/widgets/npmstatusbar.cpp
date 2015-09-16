@@ -54,12 +54,15 @@ void MainWindow::updatePackages()
     process->start(QProcess::ReadOnly);
 
     QObject::connect(process, &QProcess::readyRead, [process, this]() {
-        qWarning() << QString(process->readAll());
+        m_console->appendPlainText( QString(process->readAll()) );
     });
 
     QObject::connect(process, &QProcess::stateChanged, [process, this](QProcess::ProcessState state) {
         if ( state == QProcess::NotRunning )
+        {
+            m_console->appendPlainText( "Process finished!\n" );
             process->deleteLater();
+        }
     });
 }
 

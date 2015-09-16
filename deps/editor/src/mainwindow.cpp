@@ -183,8 +183,10 @@ void MainWindow::createProjectExplorer()
     this->addDockWidget(Qt::LeftDockWidgetArea, projectExplorerDock);
 
     // Console:
+    m_console = new QCodeEditor(this);
+    m_console->setReadOnly(true);
     QDockWidget *consoleDockWidget = new QDockWidget(tr("Console"), this);
-    consoleDockWidget->setWidget( new QCodeEditor(this) );
+    consoleDockWidget->setWidget( m_console );
 
     this->addDockWidget(Qt::BottomDockWidgetArea, consoleDockWidget);
 }

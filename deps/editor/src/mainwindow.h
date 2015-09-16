@@ -32,6 +32,7 @@ private:
     QToolBar *m_toolbar;
     ProjectExplorer *m_projectExplorer;
     RunConfigurationsWidget *m_runConfig;
+    QCodeEditor *m_console;
 
     void createMainMenu();
     void createToolbar();
