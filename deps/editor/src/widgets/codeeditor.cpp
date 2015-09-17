@@ -52,6 +52,14 @@ void CodeEditor::loadFile(const QFileInfo info)
         return;
     }
 
+    QString ext = info.suffix().toLower().trimmed();
+    if ( ext == "jade" )
+    {
+        m_editor->setHighlightor(QCodeEditor::Jade);
+    } else if ( ext == "js" || ext == "json") {
+        m_editor->setHighlightor(QCodeEditor::JavaScript);
+    }
+
     m_file = file;
     QTextStream in(file);
     m_editor->setPlainText(in.readAll());

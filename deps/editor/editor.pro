@@ -24,7 +24,9 @@ SOURCES += src/main.cpp\
     src/widgets/ProjectExplorer.cpp \
     src/widgets/lists/QuickSearchItem.cpp \
     src/widgets/lists/FileTreeWidgetItem.cpp \
-    src/QCodeEditor.cpp
+    src/QCodeEditor.cpp \
+    src/highlighter/JavaScriptHighlight.cpp \
+    src/highlighter/JadeHighlight.cpp
 
 HEADERS  += src/StdAfx.h \
     src/mainwindow.h \
@@ -37,11 +39,12 @@ HEADERS  += src/StdAfx.h \
     src/widgets/ProjectExplorer.h \
     src/widgets/lists/QuickSearchItem.h \
     src/widgets/lists/FileTreeWidgetItem.h \
-    src/highlighter.h \
     src/linenumberwidget.h \
     src/caretpositionwidget.h \
     src/QCodeEditor.h \
-    src/StdAfx.h
+    src/highlighter/JavaScriptHighlight.h \
+    src/highlighter/JadeHighlight.h \
+    src/highlighter/NodeHighlighter.h
 
 RESOURCES += \
     resources.qrc

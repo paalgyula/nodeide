@@ -34,16 +34,6 @@ NpmStatusbar::NpmStatusbar(QWidget *parent) : QFrame(parent)
     this->connect( _btnUpdate, SIGNAL(released()), parentWidget(), SIGNAL(npmUpdateReqested()) );
 }
 
-void NpmStatusbar::setProcessing(bool process)
-{
-
-}
-
-void NpmStatusbar::setStatus(const QString status)
-{
-
-}
-
 void MainWindow::updatePackages()
 {
     QProcess *process = new QProcess(this);

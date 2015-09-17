@@ -1,13 +1,13 @@
-#ifndef HIGHLIGHTER
-#define HIGHLIGHTER
+#ifndef JAVASCRIPTHIGHLIGHT_H
+#define JAVASCRIPTHIGHLIGHT_H
 
 #include <QSyntaxHighlighter>
 
-class Highlighter : public QSyntaxHighlighter
+class JavaScriptHighlight : public QSyntaxHighlighter
 {
     Q_OBJECT
 public:
-    Highlighter(QTextDocument *parent = 0);
+    JavaScriptHighlight(QTextDocument *parent = 0);
 
 protected:
     void highlightBlock(const QString &text) Q_DECL_OVERRIDE;
@@ -32,9 +32,6 @@ private:
 
     QTextCharFormat operatorFormat;
     QTextCharFormat numberFormat;
-
 };
 
-
-#endif // HIGHLIGHTER
-
+#endif // JAVASCRIPTHIGHLIGHT_H

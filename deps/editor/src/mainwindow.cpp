@@ -198,34 +198,6 @@ void MainWindow::tabChanged(int currentTab)
         this->setWindowTitle(WINDOW_TITLE);
 }
 
-void MainWindow::openFile(QFileInfo *info)
-{
-    for( int i=0; i<m_documentTabs->count(); i++ )
-    {
-        CodeEditor *editor = (CodeEditor*)m_documentTabs->widget(i);
-        if ( editor->documentPath() == info->absoluteFilePath() )
-        {
-            m_documentTabs->setCurrentIndex(i);
-            return;
-        }
-    }
-
-    CodeEditor *editor = new CodeEditor(this);
-    editor->loadFile(*info);
-    QIcon icon = Tools::getInstance().getIconForFile(info);
-
-    int tabIndex = -1;
-    if ( icon.isNull() )
-        tabIndex = m_documentTabs->addTab( editor, info->fileName() );
-    else
-        tabIndex = m_documentTabs->addTab( editor, icon, info->fileName() );
-
-    connect(editor, SIGNAL(modificationChanged(bool, CodeEditor*)), this, SLOT(fileModificationChanged(bool, CodeEditor*)));
-
-    m_documentTabs->setCurrentIndex( tabIndex );
-    editor->setFocus();
-}
-
 void MainWindow::closeFile(int tabIndex)
 {
     CodeEditor *editor = (CodeEditor*)(m_documentTabs->widget(tabIndex));

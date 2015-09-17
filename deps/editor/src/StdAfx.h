@@ -3,9 +3,6 @@
 
 #if defined __cplusplus
 
-#include "QCodeEditor.h"
-#include "mainwindow.h"
-
 #include <QCompleter>
 #include <QLineEdit>
 #include <QDockWidget>
@@ -33,8 +30,24 @@
 #include <src/widgets/codeeditor.h>
 #include <src/widgets/ProjectExplorer.h>
 #include <src/widgets/runconfigurationswidget.h>
+#include <src/widgets/directorytreewidgetitem.h>
+#include <src/widgets/npmstatusbar.h>
+#include <src/widgets/QuickFileOpenWidget.h>
+#include <src/widgets/lists/FileTreeWidgetItem.h>
+#include <src/widgets/lists/QuickSearchItem.h>
 
+#include <src/caretpositionwidget.h>
+#include <src/linenumberwidget.h>
+
+#include <src/QCodeEditor.h>
+#include <src/mainwindow.h>
 #include <src/mimetypehelper.h>
+
+// Highlighters
+#include <src/highlighter/NodeHighlighter.h>
+
+#include <src/highlighter/JavaScriptHighlight.h>
+#include <src/highlighter/JadeHighlight.h>
 
 #endif
 

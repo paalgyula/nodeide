@@ -1,7 +1,6 @@
 #include "QCodeEditor.h"
 
 #include "caretpositionwidget.h"
-#include "highlighter.h"
 #include "linenumberwidget.h"
 
 #include <QPainter>
@@ -9,6 +8,9 @@
 
 #include <QTextDocumentFragment>
 #include <QDebug>
+
+#include <src/highlighter/JavaScriptHighlight.h>
+#include <src/highlighter/JadeHighlight.h>
 
 QCodeEditor::QCodeEditor(QWidget *parent) : QPlainTextEdit(parent)
 {
@@ -21,8 +23,6 @@ QCodeEditor::QCodeEditor(QWidget *parent) : QPlainTextEdit(parent)
     font.setFamily("Monospace");
     font.setFixedPitch(true);
     font.setPointSize(10);
-
-    _highlighter = new Highlighter(document());
 
     this->setFont(font);
 
@@ -47,6 +47,7 @@ QCodeEditor::QCodeEditor(QWidget *parent) : QPlainTextEdit(parent)
     caretWidgetFont.setFixedPitch(false);
 
     _tabSize = 2;
+    _highlighter = NULL;
 
     QTextOption textOption = document()->defaultTextOption();
     //textOption.setFlags(QTextOption::ShowTabsAndSpaces | QTextOption::ShowLineAndParagraphSeparators);
@@ -72,6 +73,22 @@ int QCodeEditor::caretPositionAreaWidth()
 {
     QFontMetrics metric(caretWidgetFont);
     return metric.width(positionStr) + 8;
+}
+
+void QCodeEditor::setHighlightor(QCodeEditor::HighlightLanguage lng)
+{
+    if (_highlighter)
+        delete _highlighter;
+
+    switch (lng)
+    {
+        case JavaScript:
+            _highlighter = new JavaScriptHighlight(document());
+            break;
+        case Jade:
+            _highlighter = new JadeHighlight(document());
+            break;
+    }
 }
 
 void QCodeEditor::updateCaretWidget()
@@ -333,102 +350,3 @@ void QCodeEditor::caretPositionAreaPaintEvent(QPaintEvent *event)
                          ), Qt::AlignRight, positionStr);
 
 }
-
-Highlighter::Highlighter(QTextDocument *parent) : QSyntaxHighlighter(parent)
-{
-    HighlightingRule rule;
-
-    keywordFormat.setForeground(QColor("#BEE5FF"));
-
-    QStringList keywordPatterns;
-    keywordPatterns = QString("break case class catch const continue "
-            "debugger default delete do else export "
-            "extends finally for function if import "
-            "in instanceof let new return super switch "
-            "this throw try typeof var void while with yield null")
-            .split(" ");
-
-    foreach (const QString &pattern, keywordPatterns) {
-        rule.pattern = QRegExp(QString("\\b%1\\b").arg(pattern));
-        rule.format = keywordFormat;
-        highlightingRules.append(rule);
-    }
-
-    // Formats
-    //classFormat.setFontWeight(QFont::Bold);
-    classFormat.setForeground(Qt::darkMagenta);
-    rule.pattern = QRegExp("\\bQ[A-Za-z]+\\b");
-    rule.format = classFormat;
-    highlightingRules.append(rule);
-
-    /*functionFormat.setFontItalic(true);
-    functionFormat.setForeground(QColor("#BEE5FF"));
-    rule.pattern = QRegExp("\\b[A-Za-z0-9_]+(?=\\()");
-    rule.format = functionFormat;
-    highlightingRules.append(rule);*/
-
-    // operators
-    operatorFormat.setForeground(QColor("#FFD14D"));
-    rule.pattern = QRegExp("[&{}\\(\\)\\[\\]\\!\\?%\\|<>=:;,\\.-\\*]");
-    rule.format = operatorFormat;
-    highlightingRules.append(rule);
-
-    numberFormat.setForeground(QColor("#FFA09E"));
-    rule.pattern = QRegExp("(\\b[0-9]+\\b)");
-    rule.format = numberFormat;
-    highlightingRules.append(rule);
-
-    quotationFormat.setForeground(QColor("#C6F079"));
-    rule.pattern = QRegExp("(\"[^\"]+\")|(\'[^\']+\')");
-    rule.format = quotationFormat;
-    highlightingRules.append(rule);
-
-    QTextCharFormat commentFormat;
-    commentFormat.setForeground(Qt::gray);
-    rule.pattern = QRegExp("[^:]//.*$");
-    rule.format = commentFormat;
-    highlightingRules.append(rule);
-}
-
-void Highlighter::highlightBlock(const QString &text)
-{
-    foreach (const HighlightingRule &rule, highlightingRules) {
-        QRegExp expression(rule.pattern);
-        int index = expression.indexIn(text);
-        while (index >= 0) {
-            int length = expression.matchedLength();
-            setFormat(index, length, rule.format);
-            index = expression.indexIn(text, index + length);
-        }
-    }
-
-
-    QTextCharFormat multiLineCommentFormat;
-    multiLineCommentFormat.setForeground( Qt::gray );
-
-    QRegExp startExpression("/\\*");
-    QRegExp endExpression("\\*/");
-
-    setCurrentBlockState(0);
-
-    int startIndex = 0;
-    if (previousBlockState() != 1)
-        startIndex = text.indexOf(startExpression);
-
-    while (startIndex >= 0) {
-       int endIndex = text.indexOf(endExpression, startIndex);
-       int commentLength;
-       if (endIndex == -1) {
-           setCurrentBlockState(1);
-           commentLength = text.length() - startIndex;
-       } else {
-           commentLength = endIndex - startIndex
-                           + endExpression.matchedLength();
-       }
-       setFormat(startIndex, commentLength, multiLineCommentFormat);
-       startIndex = text.indexOf(startExpression,
-                                 startIndex + commentLength);
-    }
-}
-
-//////////////////////////////////////////////////////////////////////////////////

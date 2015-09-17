@@ -9,6 +9,11 @@
 class QCodeEditor : public QPlainTextEdit
 {
 public:
+    enum HighlightLanguage {
+        JavaScript,
+        Jade
+    };
+
     explicit QCodeEditor(QWidget *parent);
     void lineNumberAreaPaintEvent(QPaintEvent *event);
     void caretPositionAreaPaintEvent(QPaintEvent *event);
@@ -18,6 +23,8 @@ public:
     // Tab size
     void setTabSize(int tabSize) { this->_tabSize = tabSize; }
     int tabSize() { return this->_tabSize; }
+
+    void setHighlightor(HighlightLanguage lng);
 
 public slots:
     void updateLineNumberAreaWidth(int newBlockCount);
